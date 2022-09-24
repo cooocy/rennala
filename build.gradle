@@ -1,0 +1,82 @@
+plugins {
+    id 'org.springframework.boot' version '3.0.0-M5'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'java'
+    id 'jacoco'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'maven-publish'
+}
+
+group = 'ink.wulian.er'
+version = '1.2'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    set('springCloudVersion', "2022.0.0-M4")
+}
+
+repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url "https://jitpack.io" }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://nexus.5lian.ink/repository/the-lands-between/' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+dependencies {
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // springboot
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // springboot actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.2.10.RELEASE'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0-RC1'
+
+    implementation 'ink.wulian.er:godrick:1.2'
+
+    implementation group: 'cn.hutool', name: 'hutool-all', version: '5.7.13'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+    repositories {
+        maven {
+            url 'https://nexus.5lian.ink/repository/the-lands-between/'
+            credentials {
+                username 'dev-0'
+                password 'dev-0'
+            }
+        }
+
+    }
+}
