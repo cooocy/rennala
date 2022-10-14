@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'ink.wulian.er'
-version = '0.0.1'
+version = '0.1.0'
 sourceCompatibility = '17'
 
 configurations {
@@ -41,6 +41,9 @@ dependencies {
 
     api 'ink.wulian.er:godrick:1.0.0'
     api group: 'cn.hutool', name: 'hutool-all', version: '5.7.13'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.7.4'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.7.4'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

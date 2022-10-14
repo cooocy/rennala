@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.Map;
 
-@RequestMapping
 @RestController
+@RequestMapping
 public class HealthController {
 
     @Value("${spring.application.name}")
