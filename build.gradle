@@ -2,23 +2,21 @@ plugins {
     id 'org.springframework.boot' version '3.0.0-M5'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
+    // 可以在 dependencies 中使用 api 类型. 有关 api 和 implementation 的区别:
+    // https://docs.gradle.org/current/userguide/java_library_plugin.html
+    id 'java-library'
     id 'jacoco'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
 }
 
 group = 'ink.wulian.er'
-version = '1.2'
+version = '1.0.0'
 sourceCompatibility = '17'
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}
-
-ext {
-    set('springCloudVersion', "2022.0.0-M4")
 }
 
 repositories {
@@ -31,7 +29,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.0-M5"
     }
 }
 
@@ -41,22 +39,20 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // springboot
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework.boot:spring-boot-starter-web'
 
     // springboot actuator
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    api 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // feign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.2.10.RELEASE'
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0-RC1'
+    api 'ink.wulian.er:godrick:1.0.0'
+    api group: 'cn.hutool', name: 'hutool-all', version: '5.7.13'
 
-    implementation 'ink.wulian.er:godrick:1.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
 
-    implementation group: 'cn.hutool', name: 'hutool-all', version: '5.7.13'
+java {
+    withSourcesJar()
 }
 
 tasks.named('test') {
@@ -64,19 +60,35 @@ tasks.named('test') {
 }
 
 publishing {
-    publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-        }
-    }
+
     repositories {
         maven {
             url 'https://nexus.5lian.ink/repository/the-lands-between/'
             credentials {
                 username 'dev-0'
-                password 'dev-0'
+                password 'todo'
             }
         }
-
     }
+
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = rootProject.name
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Malenia'
+                description = 'A Web Server Infra using SpringBoot.'
+                url = 'https://nexus.5lian.ink'
+            }
+        }
+    }
+
 }
