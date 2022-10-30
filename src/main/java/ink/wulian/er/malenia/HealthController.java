@@ -18,7 +18,7 @@ public class HealthController {
 
     @GetMapping("/")
     public Result<Map<String, Object>> index() {
-        Map<String, Object> m = Map.of("app", appName, "serverTime", Instant.now());
+        Map<String, Object> m = Map.of("server", appName, "ts", Instant.now());
         return Result.ok(m);
     }
 
