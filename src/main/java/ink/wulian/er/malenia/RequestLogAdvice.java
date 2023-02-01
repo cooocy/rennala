@@ -41,6 +41,8 @@ public class RequestLogAdvice extends OncePerRequestFilter {
         request.setAttribute(RequestContextKey.OCCURRED_AT, occurredAt);
         request.setAttribute(RequestContextKey.REQUEST_ID, requestId);
 
+        response.addHeader("X-Request-Id", requestId);
+
         if (LOG_VERBOSE) {
             ContentCachingRequestWrapper req = new ContentCachingRequestWrapper(request);
             ContentCachingResponseWrapper res = new ContentCachingResponseWrapper(response);
