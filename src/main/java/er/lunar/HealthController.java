@@ -1,6 +1,6 @@
-package ink.wulian.er.malenia;
+package er.lunar;
 
-import ink.wulian.er.godrick.response.Result;
+import er.carian.response.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

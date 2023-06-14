@@ -1,10 +1,10 @@
-package ink.wulian.er.malenia;
+package er.lunar;
 
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 @Import({HealthController.class, GlobalExceptionHandler.class})
-@Configuration
+@AutoConfiguration
 public class Config {
 
 }

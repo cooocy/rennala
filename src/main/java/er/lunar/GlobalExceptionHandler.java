@@ -1,7 +1,7 @@
-package ink.wulian.er.malenia;
+package er.lunar;
 
-import ink.wulian.er.godrick.response.AbstractBizException;
-import ink.wulian.er.godrick.response.Result;
+import er.carian.response.AbstractBizException;
+import er.carian.response.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
