@@ -25,9 +25,12 @@ import java.util.Optional;
 @Import(RequestLogAdvice.class)
 public class ContextAdvice extends OncePerRequestFilter {
 
+    private final TokenPolice tokenPolice;
+
     private final ProfileAssembler profileAssembler;
 
-    public ContextAdvice(ProfileAssembler profileAssembler) {
+    public ContextAdvice(TokenPolice tokenPolice, ProfileAssembler profileAssembler) {
+        this.tokenPolice = tokenPolice;
         this.profileAssembler = profileAssembler;
     }
 
@@ -36,10 +39,21 @@ public class ContextAdvice extends OncePerRequestFilter {
         String requestId = (String) request.getAttribute(Constants.sRequestId);
         Instant occurredAt = (Instant) request.getAttribute(Constants.sOccurredAt);
         Context context = new Context(requestId, occurredAt);
-        Optional<String> ot = profileAssembler.getToken(request);
-        Optional<AbstractProfile> op = profileAssembler.assemble(request);
-        ot.ifPresent(context::setToken);
-        op.ifPresent(context::setProfile);
+
+        Optional<String> otk = tokenPolice.getTokenKey(request);
+        otk.ifPresent(tk -> {
+            context.setTokenKey(tk);
+            Optional<Token> ot = tokenPolice.decodeToken(tk);
+            ot.ifPresent(t -> {
+                context.setToken(t);
+                if (tokenPolice.isValid(t)) {
+                    tokenPolice.refresh(t);
+                    Optional<AbstractProfile> op = profileAssembler.assemble(t);
+                    op.ifPresent(context::setProfile);
+                }
+            });
+
+        });
         request.setAttribute(ContextKey.sCtx, context);
         log.info("[] Context: {}", context);
         filterChain.doFilter(request, response);

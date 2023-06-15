@@ -123,34 +123,58 @@ public class AdviceConfig {
 }
 ```
 
-Then you must implement `ProfileAssembler`, it will be called in `ContextAdvice` before encapsulating context.
+Then you must implement `TokenPolice` and `ProfileAssembler`.
 
 This is a demo.
 
 ```java
-@Component
-public class DemoProfileAssembler implements ProfileAssembler {
 
-    private final UserRepository userRepository;
+@Component
+public class SimpleTokenPolice implements TokenPolice<SimpleToken> {
+
+    private final TokenRepository tokenRepository;
 
     @Autowired
-    public DemoProfileAssembler(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public SimpleTokenPolice(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
-    public Optional<String> getToken(HttpServletRequest request) {
+    public Optional<String> getTokenKey(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader("X-Token"));
     }
 
     @Override
-    public Optional<AbstractProfile> assemble(HttpServletRequest request) {
-        Optional<String> ot = getToken(request);
-        if (ot.isPresent() && "xyz".equals(ot.get())) {
-            return Optional.of(new Profile());
-        } else {
-            return Optional.empty();
-        }
+    public Optional<SimpleToken> decodeToken(String tokenKey) {
+        return tokenRepository.findById(tokenKey);
+    }
+
+    @Override
+    public boolean isValid(SimpleToken token) {
+        return token.isValid();
+    }
+
+    @Override
+    public void refresh(SimpleToken token) {
+        token.refresh();
+        tokenRepository.save(token);
+    }
+
+}
+
+@Component
+public class SimpleProfileAssembler implements ProfileAssembler<Profile, SimpleToken> {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public SimpleProfileAssembler(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public Optional<Profile> assemble(SimpleToken token) {
+        return userRepository.findById(token.getUserId()).map(Profile::new);
     }
 
 }
@@ -232,6 +256,6 @@ auth:
       black
 ```
 
-## 😊Who is Rennala ?
+## 😊 Who is Rennala ?
 
 [Rennala: Queen of the Full Moon](https://eldenring.wiki.fextralife.com/Rennala+Queen+of+the+Full+Moon)

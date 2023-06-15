@@ -23,7 +23,7 @@ public class ContextReader {
      */
     @Nonnull
     public static Optional<AbstractProfile> getProfile(@Nonnull HttpServletRequest request) {
-        Context ctx = (Context) request.getAttribute(ContextKey.sCtx);
+        Context ctx = getContext(request);
         return Optional.ofNullable(ctx.getProfile());
     }
 

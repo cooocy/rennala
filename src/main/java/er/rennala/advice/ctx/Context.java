@@ -28,14 +28,21 @@ public class Context {
     private final Instant occurredAt;
 
     /**
-     * 请求 Token
+     * 用户携带的 Token Key.
      */
     @Setter
     @Nullable
-    private String token;
+    private String tokenKey;
 
     /**
-     * 用户侧写, 只有当 token 有效时才能获取到 profile
+     * 根据 Token Key 解析的 Token.
+     */
+    @Setter
+    @Nullable
+    private Token token;
+
+    /**
+     * 根据解析到的 Token 获取的用户侧写
      */
     @Setter
     @Nullable
