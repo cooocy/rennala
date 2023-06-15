@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- *
  * 根据配置文件中的白名单或黑名单, 检查请求是否携带了有效的 Token, 无效时返回 10001 + Token Not Found or Invalid
  * 两种模式不能同时生效.
  * auth:
@@ -46,8 +45,9 @@ public class CheckTokenAdvice extends OncePerRequestFilter {
     public CheckTokenAdvice(CheckedUris checkedUris, ObjectMapper objectMapper) {
         this.checkedUris = checkedUris;
         this.objectMapper = objectMapper;
-        if (!checkedUris.getMode().equals("black") && !checkedUris.getMode().equals("white")) {
-            log.warn("mode {} error, must be black or white.", checkedUris.getMode());
+        String mode = checkedUris.getMode();
+        if (mode != null && !"black".equals(mode) && !"white".equals(mode)) {
+            log.warn("mode {} error, must be black or white.", mode);
         }
     }
 
@@ -59,18 +59,23 @@ public class CheckTokenAdvice extends OncePerRequestFilter {
             Set<String> black = checkedUris.getBlack();
             if (black != null && black.contains(uri)) {
                 checkToken(request, response, filterChain);
+                return;
             } else {
                 filterChain.doFilter(request, response);
+                return;
             }
         }
         if ("white".equals(mode)) {
             Set<String> white = checkedUris.getWhite();
             if (white != null && white.contains(uri)) {
                 filterChain.doFilter(request, response);
+                return;
             } else {
                 checkToken(request, response, filterChain);
+                return;
             }
         }
+        filterChain.doFilter(request, response);
     }
 
     private void checkToken(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
