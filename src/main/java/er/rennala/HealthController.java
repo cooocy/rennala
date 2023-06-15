@@ -1,4 +1,4 @@
-package er.lunar;
+package er.rennala;
 
 import er.carian.response.Result;
 import org.springframework.beans.factory.annotation.Value;

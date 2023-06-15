@@ -11,7 +11,7 @@ plugins {
 
 sourceCompatibility = '17'
 group = 'er'
-version = '1.0.0-springboot-3.1.0'
+version = '1.0.1-springboot-3.1.0'
 
 configurations {
     compileOnly {
@@ -81,7 +81,7 @@ publishing {
                 }
             }
             pom {
-                name = 'Lunar'
+                name = 'Rennala'
                 description = 'A Web Server Infra using SpringBoot.'
                 url = 'https://nexus.5lian.ink'
             }

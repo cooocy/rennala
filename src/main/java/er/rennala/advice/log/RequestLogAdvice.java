@@ -1,8 +1,10 @@
-package er.lunar;
+package er.rennala.advice.log;
 
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.IdUtil;
 
+import er.rennala.advice.AdviceOrder;
+import er.rennala.advice.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,12 +18,16 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.Instant;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 记录 Request Access Log.
+ */
 @Slf4j
-@Order(10)
+@Order(AdviceOrder.log)
 public class RequestLogAdvice extends OncePerRequestFilter {
 
     /**
@@ -29,17 +35,22 @@ public class RequestLogAdvice extends OncePerRequestFilter {
      */
     private final boolean LOG_VERBOSE;
 
+    public RequestLogAdvice() {
+        this.LOG_VERBOSE = false;
+    }
+
     public RequestLogAdvice(boolean logVerbose) {
         this.LOG_VERBOSE = logVerbose;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        long occurredAt = System.currentTimeMillis();
-        String requestId = occurredAt + "-" + IdUtil.fastSimpleUUID().toUpperCase();
+        Instant occurredAt = Instant.now();
+        long occurredAtMs = occurredAt.toEpochMilli();
+        String requestId = occurredAtMs + "-" + IdUtil.fastSimpleUUID().toUpperCase();
 
-        request.setAttribute(RequestContextKey.OCCURRED_AT, occurredAt);
-        request.setAttribute(RequestContextKey.REQUEST_ID, requestId);
+        request.setAttribute(Constants.sOccurredAt, occurredAt);
+        request.setAttribute(Constants.sRequestId, requestId);
 
         response.addHeader("X-Request-Id", requestId);
 
@@ -57,7 +68,7 @@ public class RequestLogAdvice extends OncePerRequestFilter {
             verbose.put("uri", req.getRequestURI());
             verbose.put("queryParams", queryParams);
 
-            // fixme: 当 otherFilter.doFilterInternal() 里为执行 filterChain.doFilter(), 这里的 req.getContentAsByteArray() 会获取到空.
+            // fixme: 当 otherFilter.doFilterInternal() 里未执行 filterChain.doFilter(), 这里的 req.getContentAsByteArray() 会获取到空.
             verbose.put("reqBody", new String(req.getContentAsByteArray()));
             verbose.put("resBody", new String(res.getContentAsByteArray()));
 
@@ -71,10 +82,10 @@ public class RequestLogAdvice extends OncePerRequestFilter {
         long end = System.currentTimeMillis();
 
         Map<String, Object> accessLogs = new LinkedHashMap<>();
-        accessLogs.put(RequestContextKey.OCCURRED_AT, occurredAt);
-        accessLogs.put(RequestContextKey.REQUEST_ID, requestId);
+        accessLogs.put(Constants.sOccurredAt, occurredAt);
+        accessLogs.put(Constants.sRequestId, requestId);
         accessLogs.put("uri", request.getRequestURI());
-        accessLogs.put("duration", end - occurredAt + "ms");
+        accessLogs.put("duration", end - occurredAtMs + "ms");
         accessLogs.put("clientIp", getIp(request));
         accessLogs.put("userAgent", request.getHeader("user-agent"));
 

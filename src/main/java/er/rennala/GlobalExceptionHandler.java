@@ -1,4 +1,4 @@
-package er.lunar;
+package er.rennala;
 
 import er.carian.response.AbstractBizException;
 import er.carian.response.Result;

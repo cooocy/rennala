@@ -1,4 +1,4 @@
-package er.lunar;
+package er.rennala;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
