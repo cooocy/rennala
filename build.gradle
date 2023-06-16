@@ -35,7 +35,6 @@ dependencies {
     // springboot
     api 'org.springframework.boot:spring-boot-starter'
     api 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
     // springboot actuator
     api 'org.springframework.boot:spring-boot-starter-actuator'

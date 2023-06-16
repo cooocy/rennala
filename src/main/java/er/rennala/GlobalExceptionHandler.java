@@ -3,9 +3,17 @@ package er.rennala;
 import er.carian.response.AbstractBizException;
 import er.carian.response.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static er.rennala.ErrorCode.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -17,18 +25,25 @@ public class GlobalExceptionHandler {
         return Result.err(exception.code, exception.getMessage());
     }
 
+    @ExceptionHandler(BindException.class)
+    public Result<Void> handle(BindException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        String messages = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
+        return Result.err(PARAMETER_ERROR, messages);
+    }
+
     /**
      * 访问不存在的 uri, 先进入此 handle, 再进入 RequestLogAdvice.doFilterInternal().
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public Result<Void> handle(NoHandlerFoundException exception) {
-        return Result.err(10002, "api not found.");
+        return Result.err(API_NOT_FOUND, API_NOT_FOUND_S);
     }
 
     @ExceptionHandler(Throwable.class)
     public Result<Void> handle(Throwable throwable) {
         log.error("[] Handle Throwable ⬇", throwable);
-        return Result.err(10001, throwable.getMessage());
+        return Result.err(SERVER_ERROR, throwable.getMessage());
     }
 
 }
