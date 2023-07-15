@@ -59,7 +59,7 @@ publishing {
 
     repositories {
         maven {
-            url 'https://nexus.5lian.ink/repository/the-lands-between/'
+            url 'https://nexus.dcyy.cc/repository/the-lands-between/'
             credentials {
                 username 'dev-0'
                 password 'todo'
