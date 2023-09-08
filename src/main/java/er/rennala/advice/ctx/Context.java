@@ -1,11 +1,10 @@
 package er.rennala.advice.ctx;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 
 /**
@@ -18,13 +17,11 @@ public class Context {
     /**
      * 请求 id
      */
-    @Nonnull
     private final String requestId;
 
     /**
      * 发生时间, 后端过滤器产生
      */
-    @Nonnull
     private final Instant occurredAt;
 
     /**
@@ -48,7 +45,7 @@ public class Context {
     @Nullable
     private AbstractProfile profile;
 
-    public Context(@Nonnull String requestId, @Nonnull Instant occurredAt) {
+    public Context(String requestId, Instant occurredAt) {
         this.requestId = requestId;
         this.occurredAt = occurredAt;
     }

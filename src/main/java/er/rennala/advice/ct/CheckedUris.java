@@ -1,12 +1,11 @@
 package er.rennala.advice.ct;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 @Setter
@@ -24,7 +23,6 @@ public class CheckedUris {
     /**
      * black/white
      */
-    @Nonnull
     private String mode;
 
 }

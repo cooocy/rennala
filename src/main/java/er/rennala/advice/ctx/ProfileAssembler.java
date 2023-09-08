@@ -1,7 +1,5 @@
 package er.rennala.advice.ctx;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.Optional;
 
 /**
@@ -9,7 +7,6 @@ import java.util.Optional;
  */
 public interface ProfileAssembler<P extends AbstractProfile, T extends Token> {
 
-    @Nonnull
-    Optional<P> assemble(@Nonnull T token);
+    Optional<P> assemble(T token);
 
 }

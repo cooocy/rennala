@@ -1,7 +1,7 @@
 package er.rennala;
 
 import er.carian.response.AbstractBizException;
-import er.carian.response.Result;
+import er.carian.response.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindException;
@@ -20,30 +20,30 @@ import static er.rennala.ErrorCode.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AbstractBizException.class)
-    public Result<Void> handle(AbstractBizException exception) {
+    public R<Void> handle(AbstractBizException exception) {
         log.warn("[] Handle BizException ⬇", exception);
-        return Result.err(exception.code, exception.getMessage());
+        return R.err(exception.code, exception.getMessage());
     }
 
     @ExceptionHandler(BindException.class)
-    public Result<Void> handle(BindException e) {
+    public R<Void> handle(BindException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         String messages = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
-        return Result.err(PARAMETER_ERROR, messages);
+        return R.err(PARAMETER_ERROR, messages);
     }
 
     /**
      * 访问不存在的 uri, 先进入此 handle, 再进入 RequestLogAdvice.doFilterInternal().
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Result<Void> handle(NoHandlerFoundException exception) {
-        return Result.err(API_NOT_FOUND, API_NOT_FOUND_S);
+    public R<Void> handle(NoHandlerFoundException exception) {
+        return R.err(API_NOT_FOUND, API_NOT_FOUND_S);
     }
 
     @ExceptionHandler(Throwable.class)
-    public Result<Void> handle(Throwable throwable) {
+    public R<Void> handle(Throwable throwable) {
         log.error("[] Handle Throwable ⬇", throwable);
-        return Result.err(SERVER_ERROR, throwable.getMessage());
+        return R.err(SERVER_ERROR, throwable.getMessage());
     }
 
 }

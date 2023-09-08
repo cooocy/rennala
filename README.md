@@ -1,6 +1,6 @@
 A web server scaffold using SpringBoot.
 
-## Functions
+## Features
 
 - [x] HealthController
 - [x] GlobalExceptionHandler
@@ -28,22 +28,46 @@ This is a gradle demo.
 ```groovy
 plugins {
     id 'java'
-    id 'jacoco'
-    // Add SpringBoot Plugins.
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
+sourceCompatibility = '17'
+group = 'YOUR_GROUP'
+version = ''
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url "https://jitpack.io" }
     mavenCentral()
-    // Add SpringBoot Repository and my Repository.
     maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://nexus.5lian.ink/repository/the-lands-between/' }
+    maven { url 'https://nexus.dcyy.cc/repository/the-lands-between/' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.0-M5"
+    }
 }
 
 dependencies {
-    // Add dependence.
-    implementation 'er:rennala:1.0.1-springboot-3.1.0'
+    // springboot
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Rennala: A Web Server Infra using SpringBoot.
+    implementation 'er:rennala:1.0.3-springboot-3.1.0'
+
+    // kits
+    implementation 'er:carian:1.0.1'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'cn.hutool:hutool-all:5.7.13'
 }
 ```
 

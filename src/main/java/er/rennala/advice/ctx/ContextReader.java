@@ -1,6 +1,5 @@
 package er.rennala.advice.ctx;
 
-import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
@@ -13,16 +12,14 @@ public class ContextReader {
     /**
      * 从 Request 中读取提前封装的 Context.
      */
-    @Nonnull
-    public static Context getContext(@Nonnull HttpServletRequest request) {
+    public static Context getContext(HttpServletRequest request) {
         return (Context) request.getAttribute(ContextKey.sCtx);
     }
 
     /**
      * 从 Request 中读取提前封装的 Profile.
      */
-    @Nonnull
-    public static Optional<AbstractProfile> getProfile(@Nonnull HttpServletRequest request) {
+    public static Optional<AbstractProfile> getProfile(HttpServletRequest request) {
         Context ctx = getContext(request);
         return Optional.ofNullable(ctx.getProfile());
     }
