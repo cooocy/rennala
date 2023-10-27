@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -38,6 +39,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public R<Void> handle(NoHandlerFoundException exception) {
         return R.err(API_NOT_FOUND, API_NOT_FOUND_S);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public R<Void> handle(HttpRequestMethodNotSupportedException exception) {
+        return R.err(METHOD_NOT_SUPPORT, METHOD_NOT_SUPPORT_S);
     }
 
     @ExceptionHandler(Throwable.class)
