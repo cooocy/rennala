@@ -24,7 +24,14 @@ repositories {
     maven { url "https://jitpack.io" }
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://nexus.dcyy.cc/repository/the-lands-between/' }
+    maven {
+        url 'https://maven.pkg.github.com/cooocy/the-lands-between'
+        // read only
+        credentials {
+            username 'cooocy@foxmail.com'
+            password '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'
+        }
+    }
 }
 
 dependencies {
@@ -57,10 +64,10 @@ publishing {
 
     repositories {
         maven {
-            url 'https://nexus.dcyy.cc/repository/the-lands-between/'
+            url 'https://maven.pkg.github.com/cooocy/the-lands-between'
             credentials {
-                username 'dev-0'
-                password 'todo'
+                username 'cooocy@foxmail.com'
+                password 'x'
             }
         }
     }
@@ -79,8 +86,8 @@ publishing {
             }
             pom {
                 name = 'Rennala'
-                description = 'A Web Server Infra using SpringBoot.'
-                url = 'https://nexus.5lian.ink'
+                description = 'A Web Server Infra via SpringBoot.'
+                url = 'https://github.com/cooocy/rennala'
             }
         }
     }
