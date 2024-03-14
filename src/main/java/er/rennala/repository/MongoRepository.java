@@ -1,5 +1,5 @@
 package er.rennala.repository;
 
-public interface MongoRepository<T extends AggregateRoot, ID> extends org.springframework.data.mongodb.repository.MongoRepository<T, ID> {
+public interface MongoRepository<T, ID> extends org.springframework.data.mongodb.repository.MongoRepository<T, ID> {
 
 }

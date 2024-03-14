@@ -11,7 +11,7 @@ plugins {
 
 sourceCompatibility = '17'
 group = 'er'
-version = '1.0.7-springboot-3.1.0'
+version = '1.0.8-springboot-3.1.0'
 
 configurations {
     compileOnly {
@@ -29,7 +29,7 @@ repositories {
         // read only
         credentials {
             username 'cooocy@foxmail.com'
-            password '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'
+            password 'x'
         }
     }
 }
