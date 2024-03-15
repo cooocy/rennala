@@ -86,6 +86,7 @@ public class CheckTokenAdvice extends OncePerRequestFilter {
         if (token != null && tokenPolice.isValid(token)) {
             filterChain.doFilter(request, response);
         } else {
+            response.setHeader("Content-Type", "application/json");
             response.getWriter().write(objectMapper.writeValueAsString(R.err(ErrorCode.TOKEN_NOT_FOUND_OR_VALID, ErrorCode.TOKEN_NOT_FOUND_OR_VALID_S)));
         }
     }
