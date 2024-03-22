@@ -105,6 +105,7 @@ You can switch on it like this:
 @Configuration
 public class AdviceConfig {
     @Bean
+    @ConditionalOnMissingBean(RequestLogAdvice.class)
     public RequestLogAdvice requestLogAdvice() {
         return new RequestLogAdvice(true);
         // or
@@ -116,6 +117,7 @@ public class AdviceConfig {
 or
 
 ```java
+@ConditionalOnMissingBean(RequestLogAdvice.class)
 @Import({RequestLogAdvice.class})
 @Configuration
 public class AdviceConfig {
@@ -132,6 +134,7 @@ You can switch on it like this:
 @Configuration
 public class AdviceConfig {
     @Bean
+    @ConditionalOnMissingBean(ContextAdvice.class)
     public ContextAdvice contextAdvice() {
         return new ContextAdvice();
     }
@@ -140,7 +143,8 @@ public class AdviceConfig {
 
 or
 
-```java
+```java 
+@ConditionalOnMissingBean(ContextAdvice.class)
 @Import({ContextAdvice.class})
 @Configuration
 public class AdviceConfig {
