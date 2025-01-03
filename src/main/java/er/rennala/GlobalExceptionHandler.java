@@ -1,5 +1,6 @@
 package er.rennala;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import er.carian.response.AbstractBizException;
 import er.carian.response.R;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public R<Void> handle(Throwable throwable) {
         log.error("[] Handle Throwable ⬇", throwable);
-        return R.err(SERVER_ERROR, throwable.getMessage());
+        return R.err(SERVER_ERROR, ExceptionUtil.getMessage(throwable));
     }
 
 }
