@@ -7,6 +7,7 @@ A web server scaffold using SpringBoot.
 - [x] RequestLogAdvice
 - [x] ContextAdvice
 - [x] CheckTokenAdvice
+- [x] RefProcessor
 
 ## Kit Box
 
@@ -282,6 +283,120 @@ auth:
       - /d/b2
     mode:
       black
+```
+
+#### RefProcessor
+
+A processor used to parse the referenced fields within any objects, according to the `RefAnalyzer` you have configured,
+query and restore the original object.
+
+This is an example.
+
+`Structs`
+
+```java
+import java.beans.Transient;
+
+class Book {
+
+    Long id;
+
+    @Ref(analyzer = PublisherRepository.class, refField = "code", analysisTo = "publisher")
+    String publisherCode;
+
+    @Transient
+    Publisher publisher;
+
+    @Ref(analyzer = UserRPC.class, refField = "id", analysisTo = "authors")
+    List<Long> authorIds;
+
+    @Transient
+    List<UserShadow> authors;
+
+    @DeepRef
+    List<Sponsor> sponsors;
+
+}
+
+class Publisher {
+    String code;
+    String name;
+    String address;
+}
+
+/**
+ * Only includes a part of the fields in User.
+ */
+class UserShadow {
+    Long id;
+    String name;
+}
+
+class Sponsor {
+    Long id;
+    String name;
+
+    @Ref(analyzer = UserRPC.class, refField = "id", analysisTo = "boss")
+    Long bossId;
+    
+    @Transient
+    UserShadow boss;
+}
+```
+
+`RefAnalyzers`
+
+```java
+import java.util.List;
+
+class PublisherRepository implements RefAnalyzer<Publisher, Publisher, String> {
+
+    Publisher findOne(String code) {}
+
+    List<Publisher> findMany(List<String> codes) {}
+    
+    Publisher fallback(String code) {
+        return new Publisher(code, "Unknown", "Unknown");
+    }
+    
+    Publisher convert(Publisher publisher) {
+        return publisher;
+    }
+
+}
+
+class UserRPC implements RefAnalyzer<UserShadow, User, Long> {
+
+    User findOne(Long id) {}
+
+    List<User> findMany(List<Long> ids) {}
+
+    User fallback(Long id) {
+        return new User(id, "Unknown");
+    }
+
+    /**
+     * The class User has many sensitive information, so we convert it to UserShadow.
+     */
+    UserShadow convert(User user) {
+        return new UserShadow(user.getId(), user.getName());
+    }
+
+}
+```
+
+**How to use?**
+
+```java
+class BookRepository {
+    
+    @RefAnalysis
+    List<Book> findMany();
+    
+    @RefAnalysis
+    Book findOne(Long id);
+    
+}
 ```
 
 ## 😊 Who is Rennala ?
