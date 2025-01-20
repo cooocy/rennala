@@ -13,7 +13,7 @@ import java.util.*;
 @Aspect
 public class RefProcessor {
 
-    @Around("@annotation(er.rennala.advice.domain.ref.RefAnalysis)")
+    @Around("@annotation(er.rennala.advice.domain.ref.RefAnalyst) || @within(er.rennala.advice.domain.ref.RefAnalyst)")
     public Object process(ProceedingJoinPoint joinPoint) throws Throwable {
         Object returned = joinPoint.proceed();
         handle(returned);
