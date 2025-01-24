@@ -11,7 +11,7 @@ plugins {
 
 sourceCompatibility = '17'
 group = 'er'
-version = '1.0.14-springboot-3.1.0'
+version = '1.0.15-springboot-3.1.0'
 
 configurations {
     compileOnly {
