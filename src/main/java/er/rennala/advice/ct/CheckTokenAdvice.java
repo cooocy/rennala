@@ -1,8 +1,9 @@
 package er.rennala.advice.ct;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import er.carian.response.BizException;
+import er.carian.response.Codes;
 import er.carian.response.R;
-import er.rennala.ErrorCode;
 import er.rennala.advice.AdviceOrder;
 import er.rennala.advice.ctx.*;
 import jakarta.servlet.FilterChain;
@@ -87,7 +88,8 @@ public class CheckTokenAdvice extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             response.setHeader("Content-Type", "application/json");
-            response.getWriter().write(objectMapper.writeValueAsString(R.err(ErrorCode.TOKEN_NOT_FOUND_OR_VALID, ErrorCode.TOKEN_NOT_FOUND_OR_VALID_S)));
+            R<Void> r = R.err(new BizException(Codes.TokenInvalid));
+            response.getWriter().write(objectMapper.writeValueAsString(r));
         }
     }
 

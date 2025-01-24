@@ -1,7 +1,8 @@
 package er.rennala;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import er.carian.response.AbstractBizException;
+import er.carian.response.BizException;
+import er.carian.response.Codes;
 import er.carian.response.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -15,23 +16,22 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static er.rennala.ErrorCode.*;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AbstractBizException.class)
-    public R<Void> handle(AbstractBizException exception) {
+    @ExceptionHandler(BizException.class)
+    public R<Void> handle(BizException exception) {
         log.warn("[] Handle BizException ⬇", exception);
-        return R.err(exception.code, exception.getMessage());
+        return R.err(exception);
     }
 
     @ExceptionHandler(BindException.class)
     public R<Void> handle(BindException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         String messages = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
-        return R.err(PARAMETER_ERROR, messages);
+        return R.err(new BizException(Codes.ArgsIllegal, messages));
     }
 
     /**
@@ -39,18 +39,18 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public R<Void> handle(NoHandlerFoundException exception) {
-        return R.err(API_NOT_FOUND, API_NOT_FOUND_S);
+        return R.err(new BizException(Codes.ApiNotFound));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R<Void> handle(HttpRequestMethodNotSupportedException exception) {
-        return R.err(METHOD_NOT_SUPPORT, METHOD_NOT_SUPPORT_S);
+        return R.err(new BizException(Codes.MethodNotSupport));
     }
 
     @ExceptionHandler(Throwable.class)
     public R<Void> handle(Throwable throwable) {
         log.error("[] Handle Throwable ⬇", throwable);
-        return R.err(SERVER_ERROR, ExceptionUtil.getMessage(throwable));
+        return R.err(new BizException(Codes.ServerError, ExceptionUtil.getMessage(throwable)));
     }
 
 }

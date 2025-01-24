@@ -11,7 +11,7 @@ plugins {
 
 sourceCompatibility = '17'
 group = 'er'
-version = '1.0.13-springboot-3.1.0'
+version = '1.0.14-springboot-3.1.0'
 
 configurations {
     compileOnly {
@@ -50,7 +50,7 @@ dependencies {
 
     // kits
     implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'er:carian:1.0.1'
+    implementation 'er:carian:1.0.3'
     implementation 'cn.hutool:hutool-all:5.7.13'
 
     // test
