@@ -1,4 +1,4 @@
-package er.rennala.advice.service.log;
+package er.rennala.advice.service.monitor;
 
 import cn.hutool.core.date.StopWatch;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Aspect
 public class ExecutionMonitorProcessor {
 
-    @Around("@annotation(er.rennala.advice.service.log.ExecutionMonitor) || @within(er.rennala.advice.service.log.ExecutionMonitor)")
+    @Around("@annotation(er.rennala.advice.service.monitor.ExecutionMonitor) || @within(er.rennala.advice.service.monitor.ExecutionMonitor)")
     public Object process(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch sw = new StopWatch();
         sw.start();

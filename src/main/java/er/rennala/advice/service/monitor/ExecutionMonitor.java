@@ -1,4 +1,4 @@
-package er.rennala.advice.service.log;
+package er.rennala.advice.service.monitor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
