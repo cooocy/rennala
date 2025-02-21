@@ -50,6 +50,9 @@ public class ExecutionMonitorProcessor {
     }
 
     private String object2String(Object object) {
+        if (Objects.isNull(object)) {
+            return "(NULL)";
+        }
         if (object instanceof Collection) {
             Collection c = (Collection) object;
             return "(" + c.getClass().getSimpleName() + ": size=" + c.size() + ")";
@@ -58,7 +61,7 @@ public class ExecutionMonitorProcessor {
             Map m = (Map) object;
             return "(" + m.getClass().getSimpleName() + ": size=" + m.size() + ")";
         }
-        return "(" + object.toString() + ")";
+        return "(" + object + ")";
     }
 
 }
