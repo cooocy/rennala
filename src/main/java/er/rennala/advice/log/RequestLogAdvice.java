@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -25,6 +26,8 @@ import java.util.Map;
 
 /**
  * 记录 Request Access Log.
+ * 封装 {@link Constants#sOccurredAt} 和 {@link Constants#sRequestId} 属性到 Request 中.
+ * 记录 {@link Constants#sRequestId} 到 MDC.
  */
 @Slf4j
 @Order(AdviceOrder.log)
@@ -51,6 +54,8 @@ public class RequestLogAdvice extends OncePerRequestFilter {
 
         request.setAttribute(Constants.sOccurredAt, occurredAt);
         request.setAttribute(Constants.sRequestId, requestId);
+
+        MDC.put(Constants.sRequestId, requestId);
 
         response.addHeader("X-Request-Id", requestId);
 
