@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import er.rennala.domain.RennalaException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 /**
  * Utility class for interacting with the Bookstore.
  */
+@Slf4j
 public class BookstoreKits {
 
     private BookstoreKits() {
@@ -20,10 +22,12 @@ public class BookstoreKits {
     /**
      * Pulls the content of a file from the Bookstore using the provided fullName.
      *
-     * @param fullName the full name of the file to pull, e.g., "link-melina/app-online.yaml"
+     * @param fullName            the full name of the file to pull, e.g., "link-melina/app-online.yaml"
+     * @param timeoutMilliseconds the timeout for the HTTP request in milliseconds
      * @return the content of the file as a String
+     * @throws RennalaException if the content of the file is empty or if the HTTP request fails
      */
-    public static String pullText(String fullName) {
+    public static String pullText(String fullName, int timeoutMilliseconds) {
         String bookstoreUrl = System.getenv().getOrDefault("BOOKSTORE_URL", "");
         String bookstoreToken = System.getenv().getOrDefault("BOOKSTORE_TOKEN", "");
         if (StrUtil.hasEmpty(bookstoreUrl, bookstoreToken)) {
@@ -32,7 +36,7 @@ public class BookstoreKits {
         if (StrUtil.isBlank(fullName)) {
             throw new RennalaException("[Bookstore] Please set fullName");
         }
-        try (HttpResponse httpResponse = HttpRequest.get(bookstoreUrl + "/" + fullName).header("Authorization", "token " + bookstoreToken).execute()) {
+        try (HttpResponse httpResponse = HttpRequest.get(bookstoreUrl + "/" + fullName).header("Authorization", "token " + bookstoreToken).timeout(timeoutMilliseconds).execute()) {
             if (httpResponse.getStatus() != 200) {
                 throw new RennalaException("[Bookstore] Pull Failed. HTTP Code: " + httpResponse.getStatus());
             }
@@ -65,7 +69,9 @@ public class BookstoreKits {
             Path projectRoot = Path.of("").toAbsolutePath();
             Path filePath = projectRoot.resolve(fileName);
             Files.writeString(filePath, content);
-            return filePath.toAbsolutePath().toString();
+            String absolutePath = filePath.toAbsolutePath().toString();
+            log.info("[Rennala.Bookstore] Write To File Success. File Path: {}", absolutePath);
+            return absolutePath;
         } catch (IOException e) {
             throw new RennalaException("[Bookstore] Write To File Failed. Error: " + e.getMessage());
         }
