@@ -77,4 +77,41 @@ public class BookstoreKits {
         }
     }
 
+    /**
+     * Downloads a configuration file from the Bookstore and writes it to the project's root directory.
+     * This method performs the following steps:
+     * 1. Reads the `CONFIGURATION_TAIL` environment variable to determine if the operation should proceed.
+     * - If `CONFIGURATION_TAIL` is empty, the method logs a message and exits without performing any action.
+     * 2. Replaces the placeholder `:tail` in the `remoteName` parameter with the value of `CONFIGURATION_TAIL`.
+     * 3. Extracts the file name from the `remoteName` parameter to determine the local file name.
+     * 4. Uses the `pullText` method to fetch the content of the configuration file from the Bookstore.
+     * 5. Writes the fetched content to a file in the project's root directory using the `writeTextToFile` method.
+     * 6. Logs the success of the operation, including the remote file name and the local file path.
+     *
+     * @param remoteName          the full name of the remote file to pull, e.g., "link-melina/application-:tail.yaml"
+     *                            (can include the `:tail` placeholder to be replaced by `CONFIGURATION_TAIL`)
+     * @param timeoutMilliseconds the timeout for the HTTP request in milliseconds
+     */
+    public static void downloadConfiguration(String remoteName, int timeoutMilliseconds) {
+        String tail = System.getenv().getOrDefault("CONFIGURATION_TAIL", "");
+        if (StrUtil.isEmpty(tail)) {
+            log.info("----------------------------------------------------------------------------------");
+            log.info("[] The CONFIGURATION_TAIL is empty. No Pull Configuration From Bookstore.");
+            log.info("----------------------------------------------------------------------------------");
+            return;
+        }
+
+        // Pull And then Write to project root.
+        remoteName = remoteName.replace(":tail", tail);
+        String localName = remoteName.lastIndexOf("/") == -1 ? remoteName : remoteName.substring(remoteName.lastIndexOf("/") + 1);
+        String configurationBody = BookstoreKits.pullText(remoteName, timeoutMilliseconds);
+        String localFullPath = BookstoreKits.writeTextToFile(localName, configurationBody);
+
+        log.info("----------------------------------------------------------------------------------");
+        log.info("[] Pull Configuration From Bookstore OK.");
+        log.info("   RemoteName: {}", remoteName);
+        log.info("   LocalFullPath: {}", localFullPath);
+        log.info("----------------------------------------------------------------------------------");
+    }
+
 }
