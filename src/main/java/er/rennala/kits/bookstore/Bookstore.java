@@ -1,4 +1,4 @@
-package er.rennala.kits;
+package er.rennala.kits.bookstore;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
@@ -9,14 +9,21 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 /**
  * Utility class for interacting with the Bookstore.
  */
 @Slf4j
-public class BookstoreKits {
+public class Bookstore {
 
-    private BookstoreKits() {
+    private final StorageEngine storageEngine;
+
+    public Bookstore(StorageEngine storageEngine) {
+        this.storageEngine = storageEngine;
+        log.info("----------------------------------------------------------------------------------");
+        log.info("[Bookstore] StorageEngine: {}", storageEngine.getClass().getSimpleName());
+        log.info("----------------------------------------------------------------------------------");
     }
 
     /**
@@ -27,16 +34,11 @@ public class BookstoreKits {
      * @return the content of the file as a String
      * @throws RennalaException if the content of the file is empty or if the HTTP request fails
      */
-    public static String pullText(String fullName, int timeoutMilliseconds) {
-        String bookstoreUrl = System.getenv().getOrDefault("BOOKSTORE_URL", "");
-        String bookstoreToken = System.getenv().getOrDefault("BOOKSTORE_TOKEN", "");
-        if (StrUtil.hasEmpty(bookstoreUrl, bookstoreToken)) {
-            throw new RennalaException("[Bookstore] Please set environment variables BOOKSTORE_URL and BOOKSTORE_TOKEN");
-        }
-        if (StrUtil.isBlank(fullName)) {
-            throw new RennalaException("[Bookstore] Please set fullName");
-        }
-        try (HttpResponse httpResponse = HttpRequest.get(bookstoreUrl + "/" + fullName).header("Authorization", "token " + bookstoreToken).timeout(timeoutMilliseconds).execute()) {
+    public String pullText(String fullName, int timeoutMilliseconds) {
+        String url = storageEngine.assembleUrl(fullName);
+        Map<String, String> headers = storageEngine.assembleHeaders();
+
+        try (HttpResponse httpResponse = HttpRequest.get(url).headerMap(headers, true).timeout(timeoutMilliseconds).execute()) {
             if (httpResponse.getStatus() != 200) {
                 throw new RennalaException("[Bookstore] Pull Failed. HTTP Code: " + httpResponse.getStatus());
             }
@@ -44,7 +46,7 @@ public class BookstoreKits {
             if (StrUtil.isBlank(body)) {
                 throw new RennalaException("[Bookstore] Pull Failed. Response Body is empty");
             }
-            return body;
+            return storageEngine.parseContent(body);
         } catch (Exception e) {
             throw new RennalaException("[Bookstore] Pull Failed. Error: " + e.getMessage());
         }
@@ -64,13 +66,13 @@ public class BookstoreKits {
      * @return the absolute path of the file.
      * @throws RennalaException if an I/O error occurs during the write operation
      */
-    public static String writeTextToFile(String fileName, String content) {
+    public String writeTextToFile(String fileName, String content) {
         try {
             Path projectRoot = Path.of("").toAbsolutePath();
             Path filePath = projectRoot.resolve(fileName);
             Files.writeString(filePath, content);
             String absolutePath = filePath.toAbsolutePath().toString();
-            log.info("[Rennala.Bookstore] Write To File Success. File Path: {}", absolutePath);
+            log.info("[Bookstore] Write To File Success. File Path: {}", absolutePath);
             return absolutePath;
         } catch (IOException e) {
             throw new RennalaException("[Bookstore] Write To File Failed. Error: " + e.getMessage());
@@ -92,7 +94,7 @@ public class BookstoreKits {
      *                            (can include the `:tail` placeholder to be replaced by `CONFIGURATION_TAIL`)
      * @param timeoutMilliseconds the timeout for the HTTP request in milliseconds
      */
-    public static void downloadConfiguration(String remoteName, int timeoutMilliseconds) {
+    public void downloadConfiguration(String remoteName, int timeoutMilliseconds) {
         String tail = System.getenv().getOrDefault("CONFIGURATION_TAIL", "");
         if (StrUtil.isEmpty(tail)) {
             log.info("----------------------------------------------------------------------------------");
@@ -104,8 +106,8 @@ public class BookstoreKits {
         // Pull And then Write to project root.
         remoteName = remoteName.replace(":tail", tail);
         String localName = remoteName.lastIndexOf("/") == -1 ? remoteName : remoteName.substring(remoteName.lastIndexOf("/") + 1);
-        String configurationBody = BookstoreKits.pullText(remoteName, timeoutMilliseconds);
-        String localFullPath = BookstoreKits.writeTextToFile(localName, configurationBody);
+        String configurationBody = pullText(remoteName, timeoutMilliseconds);
+        String localFullPath = writeTextToFile(localName, configurationBody);
 
         log.info("----------------------------------------------------------------------------------");
         log.info("[] Pull Configuration From Bookstore OK.");
