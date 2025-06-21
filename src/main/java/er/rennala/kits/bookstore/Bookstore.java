@@ -98,7 +98,7 @@ public class Bookstore {
         String tail = System.getenv().getOrDefault("CONFIGURATION_TAIL", "");
         if (StrUtil.isEmpty(tail)) {
             log.info("----------------------------------------------------------------------------------");
-            log.info("[] The CONFIGURATION_TAIL is empty. No Pull Configuration From Bookstore.");
+            log.info("[Bookstore] The CONFIGURATION_TAIL is empty. No Pull Configuration From Bookstore.");
             log.info("----------------------------------------------------------------------------------");
             return;
         }
@@ -110,9 +110,9 @@ public class Bookstore {
         String localFullPath = writeTextToFile(localName, configurationBody);
 
         log.info("----------------------------------------------------------------------------------");
-        log.info("[] Pull Configuration From Bookstore OK.");
-        log.info("   RemoteName: {}", remoteName);
-        log.info("   LocalFullPath: {}", localFullPath);
+        log.info("[Bookstore] Pull Configuration From Bookstore OK.");
+        log.info("            RemoteName: {}", remoteName);
+        log.info("            LocalFullPath: {}", localFullPath);
         log.info("----------------------------------------------------------------------------------");
     }
 

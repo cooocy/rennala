@@ -11,7 +11,7 @@ plugins {
 
 sourceCompatibility = '17'
 group = 'er'
-version = '1.1.7-springboot-3.1.0'
+version = '1.1.8-springboot-3.1.0'
 
 configurations {
     compileOnly {
@@ -28,8 +28,8 @@ repositories {
         url 'https://maven.pkg.github.com/cooocy/the-lands-between'
         // read only
         credentials {
-            username 'cooocy@foxmail.com'
-            password 'x'
+            username System.getenv("MAVEN_USERNAME")
+            password System.getenv("MAVEN_PASSWORD")
         }
     }
 }
@@ -71,8 +71,8 @@ publishing {
         maven {
             url 'https://maven.pkg.github.com/cooocy/the-lands-between'
             credentials {
-                username 'cooocy@foxmail.com'
-                password 'x'
+                username System.getenv("MAVEN_USERNAME")
+                password System.getenv("MAVEN_PASSWORD")
             }
         }
     }

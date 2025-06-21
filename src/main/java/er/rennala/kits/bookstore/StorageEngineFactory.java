@@ -5,6 +5,16 @@ import er.rennala.domain.BookstoreException;
 
 import java.util.Map;
 
+/**
+ * Factory class for creating instances of StorageEngine based on the BOOKSTORE_ENGINE environment variable.
+ * It supports GitLab and GitHub storage engines.
+ * These environment variables to be used:
+ * BOOKSTORE_ENGINE: "gitlab" or "github"
+ * BOOKSTORE_GITLAB_URL: the base URL for GitLab storage
+ * BOOKSTORE_GITLAB_TOKEN: the access token for GitLab storage
+ * BOOKSTORE_GITHUB_URL: the base URL for GitHub storage
+ * BOOKSTORE_GITHUB_TOKEN: the access token for GitHub storage
+ */
 public class StorageEngineFactory {
 
     private final static String GITLAB = "gitlab";
@@ -14,6 +24,12 @@ public class StorageEngineFactory {
     private StorageEngineFactory() {
     }
 
+    /**
+     * Creates a new instance of StorageEngine based on the BOOKSTORE_ENGINE environment variable.
+     *
+     * @return a StorageEngine instance
+     * @throws BookstoreException if the BOOKSTORE_ENGINE environment variable is not set or is unknown
+     */
     public static StorageEngine newStorageEngine() {
         String bookstoreEngine = System.getenv().get("BOOKSTORE_ENGINE");
         if (StrUtil.isEmpty(bookstoreEngine)) {
