@@ -79,14 +79,15 @@ public class RefProcessor {
         // Find referenced objects by referencedFieldValues.
         List<Object> referencedObjects;
         if (referencedFieldValues.size() == 1) {
-            referencedObjects = List.of(refAnalyzer.findOne(referencedFieldValues.get(0)));
+            referencedObjects = new ArrayList<>();
+            Object referencedObject = refAnalyzer.findOne(referencedFieldValues.get(0));
+            if (Objects.nonNull(referencedObject)) {
+                referencedObjects.add(referencedObject);
+            }
         } else {
             referencedObjects = refAnalyzer.findMany(referencedFieldValues);
         }
-        if (referencedObjects.isEmpty()) {
-            // Not found, by the caller to handle any exceptions.
-            return;
-        }
+
         // Mapping.
         Map<Object, Object> referencedField2Object = mappingReferencedObjects(ref, referencedObjects);
 
@@ -107,14 +108,15 @@ public class RefProcessor {
         // Find referenced objects by referencedFieldValues.
         List<Object> referencedObjects;
         if (referencedFieldValues.size() == 1) {
-            referencedObjects = List.of(refAnalyzer.findOne(referencedFieldValues.get(0)));
+            referencedObjects = new ArrayList<>();
+            Object referencedObject = refAnalyzer.findOne(referencedFieldValues.get(0));
+            if (Objects.nonNull(referencedObject)) {
+                referencedObjects.add(referencedObject);
+            }
         } else {
             referencedObjects = refAnalyzer.findMany(referencedFieldValues);
         }
-        if (referencedObjects.isEmpty()) {
-            // Not found, by the caller to handle any exceptions.
-            return;
-        }
+
         // Mapping.
         Map<Object, Object> referencedField2Object = mappingReferencedObjects(ref, referencedObjects);
 
