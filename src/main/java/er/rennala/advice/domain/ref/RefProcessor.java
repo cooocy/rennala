@@ -39,6 +39,11 @@ public class RefProcessor {
                     handle(deepObjects);
                 }
             }
+        } else if (obj instanceof Optional<?>) {
+            Optional<Object> op = (Optional<Object>) obj;
+            if (op.isPresent()) {
+                handle(op.get());
+            }
         } else {
             Class<?> objectClass = obj.getClass();
             FieldsGroupingByAnnotation groupingFields = groupingByAnnotations(objectClass.getDeclaredFields());
