@@ -92,64 +92,50 @@ Auto Configuration, the only thing you need to do is defining the application na
 ```yaml
 spring:
   application:
-    name: Hello Rennala
+    name: HelloRennala
+
+# Optional Configuration for HealthController.
+health:
+  system:
+    properties:
+      - commit
+        # The HealthController will read commit from env and return.
 ```
 
 Then you can call `http://localhost:8080` and health controller will give you a response.
 
-#### RequestLogAdvice
-
-A filter to log each http request.
-You can switch on it like this:
-
-```java
-@Configuration
-public class AdviceConfig {
-    @Bean
-    @ConditionalOnMissingBean(RequestLogAdvice.class)
-    public RequestLogAdvice requestLogAdvice() {
-        return new RequestLogAdvice(true);
-        // or
-        // return new RequestLogAdvice(false);
-    }
+```json
+{
+  "success": true,
+  "code": 0,
+  "message": "OK",
+  "data": {
+    "server": "HelloRennala",
+    "commit": "4be6ed1",
+    "ts": "2025-07-04T10:29:33.367650Z"
+  }
 }
 ```
 
-or
+#### RequestLogAdvice
 
-```java
-@ConditionalOnMissingBean(RequestLogAdvice.class)
-@Import({RequestLogAdvice.class})
-@Configuration
-public class AdviceConfig {
-}
+A filter to log each http request.
+
+```yaml
+rennala:
+  request-log:
+    enable: true    # default true
+    verbose: true   # default false, log more information.
 ```
 
 #### ContextAdvice
 
 A filter to encapsulate Request Context in Request.
 
-You can switch on it like this:
-
-```java
-@Configuration
-public class AdviceConfig {
-    @Bean
-    @ConditionalOnMissingBean(ContextAdvice.class)
-    public ContextAdvice contextAdvice() {
-        return new ContextAdvice();
-    }
-}
-```
-
-or
-
-```java 
-@ConditionalOnMissingBean(ContextAdvice.class)
-@Import({ContextAdvice.class})
-@Configuration
-public class AdviceConfig {
-}
+```yaml
+rennala:
+  context-log:
+    enable: true    # default true
 ```
 
 Then you must implement `TokenPolice` and `ProfileAssembler`.
@@ -236,27 +222,6 @@ public class DemoController {
 
 A filter to check token in Request, supporting white-list mode and black-list mode.
 
-You can switch on it like this:
-
-```java
-@Import({CheckTokenAdvice.class})
-@Configuration
-public class AdviceConfig {
-}
-```
-
-or
-
-```java
-@Configuration
-public class AdviceConfig {
-    @Bean
-    public CheckTokenAdvice checkTokenAdvice() {
-        return new CheckTokenAdvice();
-    }
-}
-```
-
 You need to define white list or black list in `application.yaml`.
 
 Note that only one mode can take effect.
@@ -264,25 +229,13 @@ Note that only one mode can take effect.
 This is a white-list demo.
 
 ```yaml
-auth:
-  uri:
-    white:
+rennala:
+  check-token:
+    enable: true     # default true
+    mode: white      # white or black
+    uris:
       - /d/w1
       - /d/w2
-    mode:
-      white
-```
-
-This is a black-list demo.
-
-```yaml
-auth:
-  uri:
-    black:
-      - /d/b1
-      - /d/b2
-    mode:
-      black
 ```
 
 #### RefProcessor

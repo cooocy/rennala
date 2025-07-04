@@ -2,13 +2,11 @@ package er.rennala.advice.ctx;
 
 import er.rennala.advice.AdviceOrder;
 import er.rennala.advice.Constants;
-import er.rennala.advice.log.RequestLogAdvice;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,16 +20,19 @@ import java.util.Optional;
  */
 @Slf4j
 @Order(AdviceOrder.ctx)
-@Import(RequestLogAdvice.class)
 public class ContextAdvice extends OncePerRequestFilter {
 
     private final TokenPolice tokenPolice;
 
     private final ProfileAssembler profileAssembler;
 
-    public ContextAdvice(TokenPolice tokenPolice, ProfileAssembler profileAssembler) {
+    private final ContextLogProperties p;
+
+    public ContextAdvice(TokenPolice tokenPolice, ProfileAssembler profileAssembler, ContextLogProperties properties) {
         this.tokenPolice = tokenPolice;
         this.profileAssembler = profileAssembler;
+        this.p = properties;
+        log.info("[RennalaAdvice] ContextProperties: enable={}", p.isEnable());
     }
 
     @Override
@@ -55,7 +56,9 @@ public class ContextAdvice extends OncePerRequestFilter {
 
         });
         request.setAttribute(ContextKey.sCtx, context);
-        log.info("[] Context: {}", context);
+        if (p.isEnable()) {
+            log.info("[CL] Context: {}", context);
+        }
         filterChain.doFilter(request, response);
     }
 

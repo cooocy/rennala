@@ -3,6 +3,7 @@ package er.rennala.advice.log;
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.IdUtil;
 
+import cn.hutool.core.util.StrUtil;
 import er.rennala.advice.AdviceOrder;
 import er.rennala.advice.Constants;
 import jakarta.servlet.FilterChain;
@@ -33,68 +34,66 @@ import java.util.Map;
 @Order(AdviceOrder.log)
 public class RequestLogAdvice extends OncePerRequestFilter {
 
-    /**
-     * 是否记录 Request 和 Response 详情
-     */
-    private final boolean LOG_VERBOSE;
+    private final RequestLogProperties p;
 
-    public RequestLogAdvice() {
-        this.LOG_VERBOSE = false;
-    }
-
-    public RequestLogAdvice(boolean logVerbose) {
-        this.LOG_VERBOSE = logVerbose;
+    public RequestLogAdvice(RequestLogProperties requestLogProperties) {
+        this.p = requestLogProperties;
+        log.info("[RennalaAdvice] RequestLogProperties: enable={}, verbose={}", p.isEnable(), p.isVerbose());
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // 生成发生时间和请求 ID
         Instant occurredAt = Instant.now();
         long occurredAtMs = occurredAt.toEpochMilli();
         String requestId = occurredAtMs + "-" + IdUtil.fastSimpleUUID().toUpperCase();
 
+        // 放入上下文
         request.setAttribute(Constants.sOccurredAt, occurredAt);
         request.setAttribute(Constants.sRequestId, requestId);
-
         MDC.put(Constants.sRequestId, requestId);
 
+        // 添加请求 ID 到响应头
         response.addHeader("X-Request-Id", requestId);
 
-        if (LOG_VERBOSE) {
+        // 如果未开启日志记录, 则直接放行
+        if (!p.isEnable()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 开启日志记录
+        // 开启详细记录
+        log.info("[RL] B ----------------------------------------------------------------------------------");
+        if (p.isVerbose()) {
             ContentCachingRequestWrapper req = new ContentCachingRequestWrapper(request);
             ContentCachingResponseWrapper res = new ContentCachingResponseWrapper(response);
             filterChain.doFilter(req, res);
 
-            String queryParams = URLDecoder.decode(req.getQueryString(), Charset.defaultCharset());
-            if (queryParams == null) {
-                queryParams = "";
+            String queryString = URLDecoder.decode(req.getQueryString(), Charset.defaultCharset());
+            if (StrUtil.isEmpty(queryString)) {
+                queryString = "";
             }
-            Map<String, Object> verbose = new LinkedHashMap<>();
-            verbose.put("id", requestId);
-            verbose.put("uri", req.getRequestURI());
-            verbose.put("queryParams", queryParams);
+            log.info("[RL] Request String: {}", queryString);
+            log.info("[RL] Request Body: {}", new String(req.getContentAsByteArray()));
+            log.info("[RL] Response Body: {}", new String(res.getContentAsByteArray()));
 
             // fixme: 当 otherFilter.doFilterInternal() 里未执行 filterChain.doFilter(), 这里的 req.getContentAsByteArray() 会获取到空.
-            verbose.put("reqBody", new String(req.getContentAsByteArray()));
-            verbose.put("resBody", new String(res.getContentAsByteArray()));
-
-            log.info("[] Request Verbose -> {}", verbose);
-
             res.copyBodyToResponse();
         } else {
             filterChain.doFilter(request, response);
         }
 
         long end = System.currentTimeMillis();
-
-        Map<String, Object> accessLogs = new LinkedHashMap<>();
-        accessLogs.put(Constants.sOccurredAt, occurredAt);
-        accessLogs.put(Constants.sRequestId, requestId);
-        accessLogs.put("uri", request.getRequestURI());
-        accessLogs.put("duration", end - occurredAtMs + "ms");
-        accessLogs.put("clientIp", getIp(request));
-        accessLogs.put("userAgent", request.getHeader("user-agent"));
-
-        log.info("[] Access -> {}", accessLogs);
+        Map<String, Object> requestLog = new LinkedHashMap<>();
+        requestLog.put(Constants.sOccurredAt, occurredAt);
+        requestLog.put(Constants.sRequestId, requestId);
+        requestLog.put("uri", request.getRequestURI());
+        requestLog.put("duration", end - occurredAtMs + "ms");
+        requestLog.put("clientIp", getIp(request));
+        requestLog.put("userAgent", request.getHeader("user-agent"));
+        log.info("[RL] Request Log: {}", requestLog);
+        log.info("[RL] E ----------------------------------------------------------------------------------");
     }
 
     private static String getIp(HttpServletRequest request) {

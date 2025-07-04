@@ -1,3 +1,4 @@
 er.rennala.RennalaAutoConfiguration
+er.rennala.DefaultAdviceConfiguration
 er.rennala.MonitorConfiguration
 er.rennala.RefConfiguration
