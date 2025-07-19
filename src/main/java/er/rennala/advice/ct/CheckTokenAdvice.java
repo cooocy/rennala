@@ -41,7 +41,7 @@ public class CheckTokenAdvice extends OncePerRequestFilter {
         this.objectMapper = objectMapper;
         this.p = properties;
         String mode = properties.getMode();
-        if (Objects.nonNull(mode) && !black.equals(mode) && !white.equals(mode)) {
+        if (!black.equals(mode) && !white.equals(mode)) {
             log.warn("[RennalaAdvice] mode {} error, must be black or white. CheckTokenAdvice will not work.", mode);
         }
         log.info("[RennalaAdvice] CheckTokenProperties: enable={}, mode={}", p.isEnable(), p.getMode());
