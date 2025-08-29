@@ -13,18 +13,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "health")
+@ConfigurationProperties(prefix = "rennala.health")
 public class HealthProperties {
 
-    private System system;
-
-    @ToString
-    @Getter
-    @Setter
-    public static class System {
-
-        private Set<String> properties = new HashSet<>();
-
-    }
+    private Set<String> properties = new HashSet<>();
 
 }

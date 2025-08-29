@@ -30,15 +30,17 @@ public class HealthController {
     @GetMapping("/")
     public R<Map<String, Object>> index() {
         HashMap<String, Object> m = new HashMap<>();
-        m.put("server", appName);
+        m.put("app", appName);
         m.put("ts", Instant.now());
-        if (Objects.nonNull(healthProperties.getSystem()) && Objects.nonNull(healthProperties.getSystem().getProperties())) {
-            healthProperties.getSystem().getProperties().forEach(p -> {
+        Map<String, String> property2Value = new HashMap<>();
+        m.put("properties", property2Value);
+        if (Objects.nonNull(healthProperties.getProperties())) {
+            healthProperties.getProperties().forEach(p -> {
                 String v = System.getProperty(p);
                 if (StrUtil.isEmpty(v)) {
                     v = "";
                 }
-                m.put(p, v);
+                property2Value.put(p, v);
             });
         }
         return R.ok(m);
