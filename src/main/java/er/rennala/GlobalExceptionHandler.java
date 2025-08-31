@@ -16,7 +16,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {

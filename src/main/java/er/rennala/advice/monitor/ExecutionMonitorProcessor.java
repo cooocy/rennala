@@ -1,4 +1,4 @@
-package er.rennala.advice.service.monitor;
+package er.rennala.advice.monitor;
 
 import cn.hutool.core.date.StopWatch;
 import lombok.extern.slf4j.Slf4j;
@@ -14,18 +14,18 @@ import java.util.Objects;
 @Aspect
 public class ExecutionMonitorProcessor {
 
-    @Around("@annotation(er.rennala.advice.service.monitor.ExecutionMonitor) || @within(er.rennala.advice.service.monitor.ExecutionMonitor)")
+    @Around("@annotation(er.rennala.advice.monitor.ExecutionMonitor) || @within(er.rennala.advice.monitor.ExecutionMonitor)")
     public Object process(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch sw = new StopWatch();
         sw.start();
 
         String className = joinPoint.getSignature().getDeclaringType().getSimpleName();
         String methodName = joinPoint.getSignature().getName();
-        log.info("[] {}.{} Begins. input: {}", className, methodName, objects2String(joinPoint.getArgs()));
+        log.info("[RNA-ExecMoni] {}.{} Begins. input: {}", className, methodName, objects2String(joinPoint.getArgs()));
 
         Object returned = joinPoint.proceed();
         sw.stop();
-        log.info("[] {}.{} Ends. time: {}ms, output: {}", className, methodName, sw.getLastTaskTimeMillis(), object2String(returned));
+        log.info("[RNA-ExecMoni] {}.{} Ends. time: {}ms, output: {}", className, methodName, sw.getLastTaskTimeMillis(), object2String(returned));
 
         return returned;
     }

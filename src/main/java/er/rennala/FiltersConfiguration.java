@@ -19,6 +19,6 @@ import org.springframework.context.annotation.Import;
         CheckTokenFilter.class,
         CheckTokenProperties.class})
 @AutoConfiguration
-public class DefaultFilterConfiguration {
+public class FiltersConfiguration {
 
 }

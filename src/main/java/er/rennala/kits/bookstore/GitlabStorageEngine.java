@@ -37,11 +37,11 @@ public class GitlabStorageEngine implements StorageEngine {
         JSON json = JSONUtil.parse(responseBody);
         Object content = json.getByPath("content");
         if (Objects.isNull(content) || !(content instanceof String)) {
-            throw new RennalaException("[Bookstore] Pull Failed. Response Body Content is empty");
+            throw new RennalaException("[RNA-Bookstore] Pull Failed. Response Body Content is empty");
         }
         String decodedContent = Base64.decodeStr((String) content);
         if (StrUtil.isEmpty(decodedContent)) {
-            throw new RennalaException("[Bookstore] Pull Failed. Response Body Content is empty");
+            throw new RennalaException("[RNA-Bookstore] Pull Failed. Response Body Content is empty");
         }
         return decodedContent;
     }

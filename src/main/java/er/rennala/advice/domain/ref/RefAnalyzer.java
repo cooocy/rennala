@@ -3,12 +3,12 @@ package er.rennala.advice.domain.ref;
 import java.util.List;
 
 /**
- * RefAnalyzer, used to find the referenced objects by id(ids) or any fields.
- * This is an example.
- * class UserPO(Long id, String name, String password, String avatar): The entity of db table(user).
- * class UserShadow(Long id, String name, String avatar): The shadow if user, you can call it UserDTO.
- * You can implement RefAnalyzer like this:
- * UserRepositoryImpl implements RefAnalyzer<UserShadow, UserPO, Long> {}
+ * <p> RefAnalyzer, used to find the referenced objects by id(ids) or any fields.
+ * <p> This is an example.
+ * <p> class UserPO(Long id, String name, String password, String avatar): The entity of db table(user).
+ * <p> class UserShadow(Long id, String name, String avatar): The shadow if user, you can call it UserDTO.
+ * <p> You can implement RefAnalyzer like this:
+ * <p> UserRepositoryImpl implements RefAnalyzer<UserShadow, UserPO, Long> {}
  *
  * @param <X> You can convert Y to X.
  * @param <Y> The Type of querying return.

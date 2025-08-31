@@ -1,6 +1,6 @@
 package er.rennala;
 
-import er.rennala.advice.service.monitor.ExecutionMonitorProcessor;
+import er.rennala.advice.monitor.ExecutionMonitorProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 

@@ -3,7 +3,7 @@ package er.rennala.kits.bookstore;
 import java.util.Map;
 
 /**
- * The HTTP Storage Engine interface for interacting with a remote storage service.
+ * <p> The HTTP Storage Engine interface for interacting with a remote storage service.
  */
 public interface StorageEngine {
 

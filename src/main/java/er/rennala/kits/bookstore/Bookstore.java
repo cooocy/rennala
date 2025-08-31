@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 /**
- * Utility class for interacting with the Bookstore.
+ * <p> Utility class for interacting with the Bookstore.
  */
 @Slf4j
 public class Bookstore {
@@ -22,7 +22,7 @@ public class Bookstore {
     public Bookstore(StorageEngine storageEngine) {
         this.storageEngine = storageEngine;
         log.info("----------------------------------------------------------------------------------");
-        log.info("[Bookstore] StorageEngine: {}", storageEngine.getClass().getSimpleName());
+        log.info("[RNA-Bookstore] StorageEngine: {}", storageEngine.getClass().getSimpleName());
         log.info("----------------------------------------------------------------------------------");
     }
 
@@ -40,15 +40,15 @@ public class Bookstore {
 
         try (HttpResponse httpResponse = HttpRequest.get(url).headerMap(headers, true).timeout(timeoutMilliseconds).execute()) {
             if (httpResponse.getStatus() != 200) {
-                throw new RennalaException("[Bookstore] Pull Failed. HTTP Code: " + httpResponse.getStatus());
+                throw new RennalaException("[RNA-Bookstore] Pull Failed. HTTP Code: " + httpResponse.getStatus());
             }
             String body = httpResponse.body();
             if (StrUtil.isBlank(body)) {
-                throw new RennalaException("[Bookstore] Pull Failed. Response Body is empty");
+                throw new RennalaException("[RNA-Bookstore] Pull Failed. Response Body is empty");
             }
             return storageEngine.parseContent(body);
         } catch (Exception e) {
-            throw new RennalaException("[Bookstore] Pull Failed. Error: " + e.getMessage());
+            throw new RennalaException("[RNA-Bookstore] Pull Failed. Error: " + e.getMessage());
         }
     }
 
@@ -72,10 +72,10 @@ public class Bookstore {
             Path filePath = projectRoot.resolve(fileName);
             Files.writeString(filePath, content);
             String absolutePath = filePath.toAbsolutePath().toString();
-            log.info("[Bookstore] Write To File Success. File Path: {}", absolutePath);
+            log.info("[RNA-Bookstore] Write To File Success. File Path: {}", absolutePath);
             return absolutePath;
         } catch (IOException e) {
-            throw new RennalaException("[Bookstore] Write To File Failed. Error: " + e.getMessage());
+            throw new RennalaException("[RNA-Bookstore] Write To File Failed. Error: " + e.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class Bookstore {
         String tail = System.getenv().getOrDefault("CONFIGURATION_TAIL", "");
         if (StrUtil.isEmpty(tail)) {
             log.info("----------------------------------------------------------------------------------");
-            log.info("[Bookstore] The CONFIGURATION_TAIL is empty. No Pull Configuration From Bookstore.");
+            log.info("[RNA-Bookstore] The CONFIGURATION_TAIL is empty. No Pull Configuration From Bookstore.");
             log.info("----------------------------------------------------------------------------------");
             return;
         }
@@ -110,9 +110,9 @@ public class Bookstore {
         String localFullPath = writeTextToFile(localName, configurationBody);
 
         log.info("----------------------------------------------------------------------------------");
-        log.info("[Bookstore] Pull Configuration From Bookstore OK.");
-        log.info("            RemoteName: {}", remoteName);
-        log.info("            LocalFullPath: {}", localFullPath);
+        log.info("[RNA-Bookstore] Pull Configuration From Bookstore OK.");
+        log.info("                RemoteName: {}", remoteName);
+        log.info("                LocalFullPath: {}", localFullPath);
         log.info("----------------------------------------------------------------------------------");
     }
 

@@ -143,8 +143,8 @@ public class RefProcessor {
                 values.add(filedValue);
             }
         } catch (IllegalAccessException e) {
-            log.error("[] Get field value failed. fieldName: {}", field.getName());
-            log.error("[] ", e);
+            log.error("[RNA-Ref] Get field value failed. fieldName: {}", field.getName());
+            log.error("[RNA-Ref] ", e);
             throw new RuntimeException(e);
         }
         return values;
@@ -168,7 +168,7 @@ public class RefProcessor {
                 f.setAccessible(true);
                 referencedField2Object.put(f.get(o), o);
             } catch (NoSuchFieldException e) {
-                log.error("[] Get field failed. fieldName: {}", ref.refField());
+                log.error("[RNA-Ref] Get field failed. fieldName: {}", ref.refField());
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
@@ -216,11 +216,11 @@ public class RefProcessor {
             targetField.setAccessible(true);
             targetField.set(singleReturn, referencedObject);
         } catch (IllegalAccessException e) {
-            log.error("[] Get field value failed. fieldName: {}", fieldWithRefAnnotation.getName());
-            log.error("[] ", e);
+            log.error("[RNA-Ref] Get field value failed. fieldName: {}", fieldWithRefAnnotation.getName());
+            log.error("[RNA-Ref] ", e);
             throw new RuntimeException(e);
         } catch (NoSuchFieldException e) {
-            log.error("[] Get field failed. fieldName: {}", ref.analysisTo());
+            log.error("[RNA-Ref] Get field failed. fieldName: {}", ref.analysisTo());
             throw new RuntimeException(e);
         }
     }

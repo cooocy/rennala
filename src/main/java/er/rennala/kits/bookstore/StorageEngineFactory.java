@@ -6,14 +6,14 @@ import er.rennala.domain.BookstoreException;
 import java.util.Map;
 
 /**
- * Factory class for creating instances of StorageEngine based on the BOOKSTORE_ENGINE environment variable.
- * It supports GitLab and GitHub storage engines.
- * These environment variables to be used:
- * BOOKSTORE_ENGINE: "gitlab" or "github"
- * BOOKSTORE_GITLAB_URL: the base URL for GitLab storage
- * BOOKSTORE_GITLAB_TOKEN: the access token for GitLab storage
- * BOOKSTORE_GITHUB_URL: the base URL for GitHub storage
- * BOOKSTORE_GITHUB_TOKEN: the access token for GitHub storage
+ * <p> Factory class for creating instances of StorageEngine based on the BOOKSTORE_ENGINE environment variable.
+ * <p> It supports GitLab and GitHub storage engines.
+ * <p> These environment variables to be used:
+ * <p> BOOKSTORE_ENGINE: "gitlab" or "github"
+ * <p> BOOKSTORE_GITLAB_URL: the base URL for GitLab storage
+ * <p> BOOKSTORE_GITLAB_TOKEN: the access token for GitLab storage
+ * <p> BOOKSTORE_GITHUB_URL: the base URL for GitHub storage
+ * <p> BOOKSTORE_GITHUB_TOKEN: the access token for GitHub storage
  */
 public class StorageEngineFactory {
 
@@ -33,7 +33,7 @@ public class StorageEngineFactory {
     public static StorageEngine newStorageEngine() {
         String bookstoreEngine = System.getenv().get("BOOKSTORE_ENGINE");
         if (StrUtil.isEmpty(bookstoreEngine)) {
-            throw new BookstoreException("BOOKSTORE_ENGINE environment variable is not set");
+            throw new BookstoreException("[RNA-Bookstore] BOOKSTORE_ENGINE environment variable is not set");
         }
 
         if (GITLAB.equals(bookstoreEngine)) {
@@ -44,7 +44,7 @@ public class StorageEngineFactory {
             return newGithubStorageEngine();
         }
 
-        throw new BookstoreException("Unknown BOOKSTORE_ENGINE: " + bookstoreEngine);
+        throw new BookstoreException("[RNA-Bookstore] Unknown BOOKSTORE_ENGINE: " + bookstoreEngine);
     }
 
     private static GitlabStorageEngine newGitlabStorageEngine() {
@@ -52,7 +52,7 @@ public class StorageEngineFactory {
         String url = environments.get("BOOKSTORE_GITLAB_URL");
         String token = environments.get("BOOKSTORE_GITLAB_TOKEN");
         if (StrUtil.hasEmpty(url, token)) {
-            throw new BookstoreException("BOOKSTORE_GITLAB_URL, BOOKSTORE_GITLAB_TOKEN environment variable is not set");
+            throw new BookstoreException("[RNA-Bookstore] BOOKSTORE_GITLAB_URL, BOOKSTORE_GITLAB_TOKEN environment variable is not set");
         }
         return new GitlabStorageEngine(url, token);
     }
@@ -62,7 +62,7 @@ public class StorageEngineFactory {
         String url = environments.get("BOOKSTORE_GITHUB_URL");
         String token = environments.get("BOOKSTORE_GITHUB_TOKEN");
         if (StrUtil.hasEmpty(url, token)) {
-            throw new BookstoreException("BOOKSTORE_GITHUB_URL, BOOKSTORE_GITHUB_TOKEN environment variable is not set");
+            throw new BookstoreException("[RNA-Bookstore] BOOKSTORE_GITHUB_URL, BOOKSTORE_GITHUB_TOKEN environment variable is not set");
         }
         return new GitHubStorageEngine(url, token);
     }
