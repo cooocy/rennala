@@ -6,6 +6,7 @@ import er.carian.response.Codes;
 import er.carian.response.R;
 import er.rennala.request.filters.FilterOrder;
 import er.rennala.request.filters.ctx.Context;
+import er.rennala.request.filters.ctx.ContextFilter;
 import er.rennala.request.filters.ctx.ContextReader;
 import er.rennala.request.filters.ctx.Token;
 import er.rennala.request.filters.ctx.TokenPolice;
@@ -24,6 +25,7 @@ import java.util.Set;
 /**
  * <p> 根据配置文件中的白名单或黑名单, 检查请求是否携带了有效的 Token, 无效时返回 10001 + Token Not Found or Invalid
  * <p> 两种模式不能同时生效.
+ * <p> 使用此过滤器, 必须启用 {@link ContextFilter}, 因为 Token 信息是从 Context 中获取的.
  */
 @Slf4j
 @Order(FilterOrder.CheckTokenFilter)
@@ -48,7 +50,7 @@ public class CheckTokenFilter extends OncePerRequestFilter {
             log.warn("[RNA-CheckTokenF] mode {} error, must be black or white. CheckTokenFilter will not work.", mode);
         }
         log.info("[RNA-CheckTokenF] Properties: enable={}, mode={}", p.isEnable(), p.getMode());
-        logger.info("[RNA-CheckTokenF] Loaded.");
+        logger.info("[RNA-CheckTokenF] Loaded. CheckTokenFilter depend on ContextFilter, please make sure ContextFilter is enabled.");
     }
 
     @Override
