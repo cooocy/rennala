@@ -1,4 +1,4 @@
-package er.rennala.advice.ct;
+package er.rennala.request.filters.ct;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Component
-@ConfigurationProperties(prefix = "rennala.check-token")
+@ConfigurationProperties(prefix = "rennala.filters.check-token")
 public class CheckTokenProperties {
 
     /**

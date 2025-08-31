@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BizException.class)
     public R<Void> handle(BizException exception) {
-        log.warn("[] Handle BizException ⬇", exception);
+        log.warn("[RNA-GEH] Handle BizException ⬇", exception);
         return R.err(exception);
     }
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 访问不存在的 uri, 先进入此 handle, 再进入 RequestLogAdvice.doFilterInternal().
+     * 访问不存在的 uri, 先进入此 handle, 再进入 RequestLogFilter.doFilterInternal().
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public R<Void> handle(NoHandlerFoundException exception) {
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public R<Void> handle(Throwable throwable) {
-        log.error("[] Handle Throwable ⬇", throwable);
+        log.error("[RNA-GEH] Handle Throwable ⬇", throwable);
         return R.err(new BizException(Codes.ServerError, ExceptionUtil.getMessage(throwable)));
     }
 

@@ -1,4 +1,4 @@
-package er.rennala.advice.ctx;
+package er.rennala.request.filters.ctx;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -9,11 +9,14 @@ import java.util.Optional;
  */
 public class ContextReader {
 
+    public static final String sCtx = "ctx";
+
+
     /**
      * 从 Request 中读取提前封装的 Context.
      */
     public static Context getContext(HttpServletRequest request) {
-        return (Context) request.getAttribute(ContextKey.sCtx);
+        return (Context) request.getAttribute(sCtx);
     }
 
     /**

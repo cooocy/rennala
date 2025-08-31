@@ -1,4 +1,4 @@
 er.rennala.RennalaAutoConfiguration
-er.rennala.DefaultAdviceConfiguration
+er.rennala.DefaultFilterConfiguration
 er.rennala.MonitorConfiguration
 er.rennala.RefConfiguration

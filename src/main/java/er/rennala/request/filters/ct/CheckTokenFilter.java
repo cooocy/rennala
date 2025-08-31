@@ -1,11 +1,14 @@
-package er.rennala.advice.ct;
+package er.rennala.request.filters.ct;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import er.carian.response.BizException;
 import er.carian.response.Codes;
 import er.carian.response.R;
-import er.rennala.advice.AdviceOrder;
-import er.rennala.advice.ctx.*;
+import er.rennala.request.filters.FilterOrder;
+import er.rennala.request.filters.ctx.Context;
+import er.rennala.request.filters.ctx.ContextReader;
+import er.rennala.request.filters.ctx.Token;
+import er.rennala.request.filters.ctx.TokenPolice;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,12 +22,12 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * 根据配置文件中的白名单或黑名单, 检查请求是否携带了有效的 Token, 无效时返回 10001 + Token Not Found or Invalid
- * 两种模式不能同时生效.
+ * <p> 根据配置文件中的白名单或黑名单, 检查请求是否携带了有效的 Token, 无效时返回 10001 + Token Not Found or Invalid
+ * <p> 两种模式不能同时生效.
  */
 @Slf4j
-@Order(AdviceOrder.checkToken)
-public class CheckTokenAdvice extends OncePerRequestFilter {
+@Order(FilterOrder.CheckTokenFilter)
+public class CheckTokenFilter extends OncePerRequestFilter {
 
     private final TokenPolice tokenPolice;
 
@@ -36,15 +39,16 @@ public class CheckTokenAdvice extends OncePerRequestFilter {
 
     private final String white = "white";
 
-    public CheckTokenAdvice(TokenPolice tokenPolice, ObjectMapper objectMapper, CheckTokenProperties properties) {
+    public CheckTokenFilter(TokenPolice tokenPolice, ObjectMapper objectMapper, CheckTokenProperties properties) {
         this.tokenPolice = tokenPolice;
         this.objectMapper = objectMapper;
         this.p = properties;
         String mode = properties.getMode();
         if (!black.equals(mode) && !white.equals(mode)) {
-            log.warn("[RennalaAdvice] mode {} error, must be black or white. CheckTokenAdvice will not work.", mode);
+            log.warn("[RNA-CheckTokenF] mode {} error, must be black or white. CheckTokenFilter will not work.", mode);
         }
-        log.info("[RennalaAdvice] CheckTokenProperties: enable={}, mode={}", p.isEnable(), p.getMode());
+        log.info("[RNA-CheckTokenF] Properties: enable={}, mode={}", p.isEnable(), p.getMode());
+        logger.info("[RNA-CheckTokenF] Loaded.");
     }
 
     @Override

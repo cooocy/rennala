@@ -1,4 +1,4 @@
-package er.rennala.advice.ctx;
+package er.rennala.request.filters.ctx;
 
 public interface AbstractProfile {
 

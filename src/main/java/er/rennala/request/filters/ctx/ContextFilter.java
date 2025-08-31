@@ -1,7 +1,7 @@
-package er.rennala.advice.ctx;
+package er.rennala.request.filters.ctx;
 
-import er.rennala.advice.AdviceOrder;
-import er.rennala.advice.Constants;
+import er.rennala.request.filters.FilterOrder;
+import er.rennala.request.filters.RequestHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,30 +15,37 @@ import java.time.Instant;
 import java.util.Optional;
 
 /**
- * 封装 Context.
- * 使用时, 需要实现 {@link ProfileAssembler}
+ * <p> 封装 Context.
+ * <p> 使用时, 需要实现 {@link ProfileAssembler} 和 {@link TokenPolice}.
  */
 @Slf4j
-@Order(AdviceOrder.ctx)
-public class ContextAdvice extends OncePerRequestFilter {
+@Order(FilterOrder.ContextFilter)
+public class ContextFilter extends OncePerRequestFilter {
 
     private final TokenPolice tokenPolice;
 
     private final ProfileAssembler profileAssembler;
 
-    private final ContextLogProperties p;
+    private final ContextProperties p;
 
-    public ContextAdvice(TokenPolice tokenPolice, ProfileAssembler profileAssembler, ContextLogProperties properties) {
+    public ContextFilter(TokenPolice tokenPolice, ProfileAssembler profileAssembler, ContextProperties properties) {
         this.tokenPolice = tokenPolice;
         this.profileAssembler = profileAssembler;
         this.p = properties;
-        log.info("[RennalaAdvice] ContextProperties: enable={}", p.isEnable());
+        log.info("[RNA-ContextF] Properties: enable={}, log={}", p.isEnable(), p.isLog());
+        logger.info("[RNA-ContextF] Loaded.");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestId = (String) request.getAttribute(Constants.sRequestId);
-        Instant occurredAt = (Instant) request.getAttribute(Constants.sOccurredAt);
+        // 如果未开启, 则直接放行
+        if (!p.isEnable()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String requestId = RequestHelper.getRequestId(request);
+        Instant occurredAt = RequestHelper.getOccurredAt(request);
         Context context = new Context(requestId, occurredAt);
 
         Optional<String> otk = tokenPolice.getTokenKey(request);
@@ -55,10 +62,12 @@ public class ContextAdvice extends OncePerRequestFilter {
             });
 
         });
-        request.setAttribute(ContextKey.sCtx, context);
-        if (p.isEnable()) {
-            log.info("[CL] Context: {}", context);
+        request.setAttribute(ContextReader.sCtx, context);
+
+        if (p.isLog()) {
+            log.info("[RNA-ContextF] Context: {}", context);
         }
+
         filterChain.doFilter(request, response);
     }
 
