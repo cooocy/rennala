@@ -16,6 +16,6 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "rennala.health")
 public class HealthProperties {
 
-    private Set<String> properties = new HashSet<>();
+    private Set<String> env = new HashSet<>();
 
 }

@@ -8,7 +8,8 @@ public class GitHubStorageEngine implements StorageEngine {
 
     private final String token;
 
-    public GitHubStorageEngine(String baseUrl, String token) {
+    public GitHubStorageEngine(String baseUrl,
+                               String token) {
         this.baseUrl = baseUrl;
         this.token = token;
     }

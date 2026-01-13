@@ -2,6 +2,7 @@ http-request/
 logs/
 
 .DS_Store
+target
 
 HELP.md
 gradle

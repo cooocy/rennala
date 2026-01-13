@@ -1,6 +1,6 @@
 package er.rennala.request.filters;
 
-import er.rennala.domain.FilterException;
+import er.rennala.z.FilterException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.Instant;

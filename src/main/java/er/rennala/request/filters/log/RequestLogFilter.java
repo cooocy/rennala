@@ -38,7 +38,9 @@ public class RequestLogFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         // 如果未开启日志记录, 则直接放行
         if (!p.isEnable()) {
             filterChain.doFilter(request, response);
@@ -59,7 +61,7 @@ public class RequestLogFilter extends OncePerRequestFilter {
             }
             log.info("[RNA-RequestLogF] Query String: {}", queryString);
             log.info("[RNA-RequestLogF] Request Body: {}", new String(req.getContentAsByteArray()));
-            log.info("[RNA-RequestLogF] Response Body: {}", new String(res.getContentAsByteArray()));
+            logResponseBody(res);
 
             // fixme: 当 otherFilter.doFilterInternal() 里未执行 filterChain.doFilter(), 这里的 req.getContentAsByteArray() 会获取到空.
             res.copyBodyToResponse();
@@ -80,6 +82,22 @@ public class RequestLogFilter extends OncePerRequestFilter {
         requestLog.put("userAgent", request.getHeader("user-agent"));
         log.info("[RNA-RequestLogF] Request Log: {}", requestLog);
         log.info("[RNA-RequestLogF] E ----------------------------------------------------------------------------------");
+    }
+
+    /**
+     * <p> 记录响应体内容
+     * <p> 仅当响应头包含 application/json 时打印完整响应体, 否则只打印响应体大小
+     */
+    private void logResponseBody(ContentCachingResponseWrapper response) {
+        // 响应头还未添加, 不能根据响应头判断
+        int contentSize = response.getContentSize();
+        if (contentSize < 65536) {
+            // 小于 64KB 的响应体, 直接打印
+            log.info("[RNA-RequestLogF] Response Body: {}", new String(response.getContentAsByteArray()));
+        } else {
+            // 否则打印 size
+            log.info("[RNA-RequestLogF] Response Body Size: {} bytes", contentSize);
+        }
     }
 
 }

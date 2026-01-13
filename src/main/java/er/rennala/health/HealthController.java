@@ -1,48 +1,44 @@
 package er.rennala.health;
 
 import cn.hutool.core.util.StrUtil;
-import er.carian.response.R;
+import er.rennala.response.R;
+import er.rennala.z.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequestMapping
 public class HealthController {
 
-    @Value("${spring.application.name}")
-    private String appName;
+    private final AppProperties appProperties;
 
     private final HealthProperties healthProperties;
 
     @Autowired
-    public HealthController(HealthProperties healthProperties) {
+    public HealthController(AppProperties appProperties,
+                            HealthProperties healthProperties) {
+        this.appProperties = appProperties;
         this.healthProperties = healthProperties;
     }
 
     @GetMapping("/")
     public R<Map<String, Object>> index() {
-        HashMap<String, Object> m = new HashMap<>();
-        m.put("app", appName);
+        LinkedHashMap<String, Object> m = new LinkedHashMap<>();
+        m.put("app", appProperties.getAppName());
         m.put("ts", Instant.now());
-        Map<String, String> property2Value = new HashMap<>();
-        m.put("properties", property2Value);
-        if (Objects.nonNull(healthProperties.getProperties())) {
-            healthProperties.getProperties().forEach(p -> {
-                String v = System.getProperty(p);
-                if (StrUtil.isEmpty(v)) {
-                    v = "";
-                }
-                property2Value.put(p, v);
-            });
-        }
+        healthProperties.getEnv().forEach(k -> {
+            String v = System.getenv(k);
+            if (StrUtil.isEmpty(v)) {
+                v = "";
+            }
+            m.put(k, v);
+        });
         return R.ok(m);
     }
 

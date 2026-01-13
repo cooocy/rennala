@@ -30,7 +30,9 @@ public class EssentialFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         // 生成发生时间和请求 ID
         Instant occurredAt = Instant.now();
         String requestId = occurredAt.toEpochMilli() + "-" + IdUtil.fastSimpleUUID().toUpperCase();

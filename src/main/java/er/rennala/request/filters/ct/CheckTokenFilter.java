@@ -1,15 +1,15 @@
 package er.rennala.request.filters.ct;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import er.carian.response.BizException;
-import er.carian.response.Codes;
-import er.carian.response.R;
 import er.rennala.request.filters.FilterOrder;
 import er.rennala.request.filters.ctx.Context;
 import er.rennala.request.filters.ctx.ContextFilter;
 import er.rennala.request.filters.ctx.ContextReader;
 import er.rennala.request.filters.ctx.Token;
 import er.rennala.request.filters.ctx.TokenPolice;
+import er.rennala.response.BizException;
+import er.rennala.response.Codes;
+import er.rennala.response.R;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +41,9 @@ public class CheckTokenFilter extends OncePerRequestFilter {
 
     private final String white = "white";
 
-    public CheckTokenFilter(TokenPolice tokenPolice, ObjectMapper objectMapper, CheckTokenProperties properties) {
+    public CheckTokenFilter(TokenPolice tokenPolice,
+                            ObjectMapper objectMapper,
+                            CheckTokenProperties properties) {
         this.tokenPolice = tokenPolice;
         this.objectMapper = objectMapper;
         this.p = properties;
@@ -54,7 +56,9 @@ public class CheckTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         if (p.isEnable()) {
             String mode = p.getMode();
             Set<String> uris = p.getUris();
@@ -82,7 +86,9 @@ public class CheckTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void checkToken(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    private void checkToken(HttpServletRequest request,
+                            HttpServletResponse response,
+                            FilterChain filterChain) throws ServletException, IOException {
         Context ctx = ContextReader.getContext(request);
         Token token = ctx.getToken();
         if (token != null && tokenPolice.isValid(token)) {

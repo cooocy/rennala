@@ -1,7 +1,7 @@
 package er.rennala.kits.bookstore;
 
 import cn.hutool.core.util.StrUtil;
-import er.rennala.domain.BookstoreException;
+import er.rennala.z.BookstoreException;
 
 import java.util.Map;
 

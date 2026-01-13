@@ -1,6 +1,6 @@
 package er.rennala.repository;
 
-import er.rennala.advice.domain.ref.RefAnalyst;
+import er.rennala.advice.ref.Dereference;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Enhanced Mongo Repository, add @RefAnalyst.
+ * <p> Enhanced Mongo Repository, add @Dereference.
  */
-@RefAnalyst
+@Dereference
 public interface EnhancedMongoRepository<T, ID> extends MongoRepository<T, ID> {
 
     @Override
@@ -28,7 +28,8 @@ public interface EnhancedMongoRepository<T, ID> extends MongoRepository<T, ID> {
     <S extends T> List<S> findAll(Example<S> example);
 
     @Override
-    <S extends T> List<S> findAll(Example<S> example, Sort sort);
+    <S extends T> List<S> findAll(Example<S> example,
+                                  Sort sort);
 
     @Override
     <S extends T> List<S> saveAll(Iterable<S> entities);
@@ -76,7 +77,8 @@ public interface EnhancedMongoRepository<T, ID> extends MongoRepository<T, ID> {
     <S extends T> Optional<S> findOne(Example<S> example);
 
     @Override
-    <S extends T> Page<S> findAll(Example<S> example, Pageable pageable);
+    <S extends T> Page<S> findAll(Example<S> example,
+                                  Pageable pageable);
 
     @Override
     <S extends T> long count(Example<S> example);
@@ -85,6 +87,7 @@ public interface EnhancedMongoRepository<T, ID> extends MongoRepository<T, ID> {
     <S extends T> boolean exists(Example<S> example);
 
     @Override
-    <S extends T, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction);
+    <S extends T, R> R findBy(Example<S> example,
+                              Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction);
 
 }

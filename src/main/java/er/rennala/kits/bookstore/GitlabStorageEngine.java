@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
-import er.rennala.domain.RennalaException;
+import er.rennala.z.RennalaException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +16,8 @@ public class GitlabStorageEngine implements StorageEngine {
 
     private final String token;
 
-    public GitlabStorageEngine(String baseUrl, String token) {
+    public GitlabStorageEngine(String baseUrl,
+                               String token) {
         this.baseUrl = baseUrl;
         this.token = token;
     }

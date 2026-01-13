@@ -3,7 +3,7 @@ package er.rennala.kits.bookstore;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import er.rennala.domain.RennalaException;
+import er.rennala.z.RennalaException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -34,7 +34,8 @@ public class Bookstore {
      * @return the content of the file as a String
      * @throws RennalaException if the content of the file is empty or if the HTTP request fails
      */
-    public String pullText(String fullName, int timeoutMilliseconds) {
+    public String pullText(String fullName,
+                           int timeoutMilliseconds) {
         String url = storageEngine.assembleUrl(fullName);
         Map<String, String> headers = storageEngine.assembleHeaders();
 
@@ -66,7 +67,8 @@ public class Bookstore {
      * @return the absolute path of the file.
      * @throws RennalaException if an I/O error occurs during the write operation
      */
-    public String writeTextToFile(String fileName, String content) {
+    public String writeTextToFile(String fileName,
+                                  String content) {
         try {
             Path projectRoot = Path.of("").toAbsolutePath();
             Path filePath = projectRoot.resolve(fileName);
@@ -94,7 +96,8 @@ public class Bookstore {
      *                            (can include the `:tail` placeholder to be replaced by `CONFIGURATION_TAIL`)
      * @param timeoutMilliseconds the timeout for the HTTP request in milliseconds
      */
-    public void downloadConfiguration(String remoteName, int timeoutMilliseconds) {
+    public void downloadConfiguration(String remoteName,
+                                      int timeoutMilliseconds) {
         String tail = System.getenv().getOrDefault("CONFIGURATION_TAIL", "");
         if (StrUtil.isEmpty(tail)) {
             log.info("----------------------------------------------------------------------------------");
