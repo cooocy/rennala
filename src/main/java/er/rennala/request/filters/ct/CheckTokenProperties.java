@@ -15,9 +15,9 @@ import java.util.Set;
 public class CheckTokenProperties {
 
     /**
-     * 是否开启检查 token, 默认 true
+     * 是否开启检查 token, 默认 false
      */
-    private boolean enable = true;
+    private boolean enable = false;
 
     /**
      * black/white

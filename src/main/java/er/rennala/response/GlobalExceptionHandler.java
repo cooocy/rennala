@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.List;
@@ -22,6 +23,15 @@ public class GlobalExceptionHandler {
     public R<Void> handle(BizException exception) {
         log.warn("[RNA-GEH] Handle BizException ⬇", exception);
         return R.err(exception);
+    }
+
+    /**
+     * <p> 路径参数中的枚举转换错误
+     * <p> e.g. /api/pick?type=FIELD
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public R<Void> handle(MethodArgumentTypeMismatchException exception) {
+        return R.err(new BizException(Codes.ArgsIllegal));
     }
 
     /**
