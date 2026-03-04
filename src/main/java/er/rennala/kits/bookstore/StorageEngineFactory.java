@@ -9,13 +9,17 @@ import java.util.Map;
  * <p> Factory class for creating instances of StorageEngine based on the BOOKSTORE_ENGINE environment variable.
  * <p> It supports GitLab and GitHub storage engines.
  * <p> These environment variables to be used:
- * <p> BOOKSTORE_ENGINE: "gitlab" or "github"
+ * <p> BOOKSTORE_ENGINE: "gitlab" or "github" or "codeup"
  * <p> BOOKSTORE_GITLAB_URL: the base URL for GitLab storage
  * <p> BOOKSTORE_GITLAB_TOKEN: the access token for GitLab storage
  * <p> BOOKSTORE_GITHUB_URL: the base URL for GitHub storage
  * <p> BOOKSTORE_GITHUB_TOKEN: the access token for GitHub storage
+ * <p> BOOKSTORE_CODEUP_URL: the base URL for Codeup storage
+ * <p> BOOKSTORE_CODEUP_TOKEN: the access token for Codeup storage
  */
 public class StorageEngineFactory {
+
+    private final static String CODEUP = "codeup";
 
     private final static String GITLAB = "gitlab";
 
@@ -36,6 +40,10 @@ public class StorageEngineFactory {
             throw new BookstoreException("[RNA-Bookstore] BOOKSTORE_ENGINE environment variable is not set");
         }
 
+        if (CODEUP.equals(bookstoreEngine)) {
+            return newCodeupStorageEngine();
+        }
+
         if (GITLAB.equals(bookstoreEngine)) {
             return newGitlabStorageEngine();
         }
@@ -45,6 +53,16 @@ public class StorageEngineFactory {
         }
 
         throw new BookstoreException("[RNA-Bookstore] Unknown BOOKSTORE_ENGINE: " + bookstoreEngine);
+    }
+
+    private static CodeupStorageEngine newCodeupStorageEngine() {
+        Map<String, String> environments = System.getenv();
+        String url = environments.get("BOOKSTORE_CODEUP_URL");
+        String token = environments.get("BOOKSTORE_CODEUP_TOKEN");
+        if (StrUtil.hasEmpty(url, token)) {
+            throw new BookstoreException("[RNA-Bookstore] BOOKSTORE_CODEUP_URL, BOOKSTORE_CODEUP_TOKEN environment variable is not set");
+        }
+        return new CodeupStorageEngine(url, token);
     }
 
     private static GitlabStorageEngine newGitlabStorageEngine() {

@@ -1,5 +1,6 @@
 package er.rennala.kits;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import er.rennala.response.BizException;
 import er.rennala.response.Codes;
@@ -50,6 +51,23 @@ public final class JacksonObjectMapper {
             throw new BizException(Codes.DataError, "JSON to Object error.");
         }
     }
+
+    /**
+     * <p> 将 JSON 字符串转换为 JsonNode 树
+     *
+     * @param json 待转换的 JSON 字符串
+     * @return JsonNode 树
+     */
+    @Nonnull
+    public static JsonNode readJsonTree(@Nonnull String json) {
+        try {
+            return objectMapper.readTree(json);
+        } catch (Exception e) {
+            log.error("JacksonObjectMapper readJsonTree error: ", e);
+            throw new BizException(Codes.DataError, "JSON to JsonNode error.");
+        }
+    }
+
 
     /**
      * <p> 将一个对象转换为另一个类型的对象
