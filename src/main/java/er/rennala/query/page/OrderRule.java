@@ -27,9 +27,18 @@ public class OrderRule {
     public OrderRule() {
     }
 
-    public OrderRule(String field, Order order) {
+    public OrderRule(String field,
+                     Order order) {
         this.field = field;
         this.order = order;
+    }
+
+    public static OrderRule asc(String field) {
+        return new OrderRule(field, Order.ASC);
+    }
+
+    public static OrderRule desc(String field) {
+        return new OrderRule(field, Order.DESC);
     }
 
     public OrderItem toMybatisPlusOrderItem() {
