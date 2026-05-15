@@ -1,5 +1,7 @@
 package er.rennala.jackson;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -34,6 +36,12 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
 
         // 增加 jdk 模块, 解析 Optional
         Jdk8Module jdk8Module = new Jdk8Module();
+
+        // 基于字段而非方法进行序列化 or 反序列化
+        builder.visibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        builder.visibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
+        builder.visibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
+        builder.visibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
 
         // 返回所有模块
         builder.modules(timeModule, sm, jdk8Module);
