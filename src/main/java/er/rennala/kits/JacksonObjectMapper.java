@@ -70,7 +70,17 @@ public final class JacksonObjectMapper {
 
 
     /**
-     * <p> 将一个对象转换为另一个类型的对象
+     * <p> 将一个对象转换为另一个类型的对象.
+     *
+     * <p> 原理:
+     * <p> ObjectMapper#convertValue 内部用 TokenBuffer (内存中的 Jackson token 流), 整个过程是:
+     * <p> fromValue → 序列化器 → TokenBuffer (内存 token) → 反序列化器 → toValueType
+     * <p> 中间没有生成 String 形态的 JSON 文本, 也不走 I/O, 所以省掉了字符编码/解析开销.
+     * <p> 关注点:
+     * <p> @JsonProperty, @JsonCreator, @JsonIgnore, 可见性设置都生效.
+     * <p> Long → String（ToStringSerializer）也会生效. 于是反序列化的目标字段如果是 Long, 需要它能从字符串解析回来（Long 默认可以）.
+     * <p> 因为本质就是「序列化再反序列化」, 所以精度会按序列化器规则截断. 例如 Instant 经过你的秒级序列化器后, 转出来的对象就只剩秒精度了.
+     * <P> 性能上比直接字段拷贝 (MapStruct or 手写 set) 慢一两个数量级, 做高频热路径就别用 convertValue.
      *
      * @param fromValue   待转换的对象
      * @param toValueType 目标对象类型
