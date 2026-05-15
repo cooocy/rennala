@@ -1,4 +1,6 @@
 er.rennala.autoconfig.RennalaAutoConfiguration
 er.rennala.autoconfig.FiltersAutoConfiguration
+er.rennala.autoconfig.JacksonAutoConfiguration
 er.rennala.autoconfig.MonitorAutoConfiguration
+er.rennala.autoconfig.MyBatisPlusAutoConfiguration
 er.rennala.autoconfig.RefAutoConfiguration
